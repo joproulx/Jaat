@@ -1,0 +1,140 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+
+    <!--<button type="button" onclick="">Click Me!</button>-->
+</head>
+<body>
+<canvas width="800" height="450"></canvas>
+<script src="Common/Class.js"></script>
+<script src="Common/Sylvester.src.js"></script>
+<script src="Common/DynamicProperty.js"></script>
+<script src="Common/Event.js"></script>
+<script src="Common/GuidGenerator.js"></script>
+<script src="Common/HashSet.js"></script>
+<script src="Common/HashTable.js"></script>
+<script src="Common/PolyFill.js"></script>
+<script src="Common/Timer.js"></script>
+
+<script src="SceneNode/SceneNode.js"></script>
+<script src="SceneNode/SceneNodeLeaf.js"></script>
+<script src="SceneNode/SceneNodeManager.js"></script>
+
+<script src="Shape/Path.js"></script>
+<script src="Shape/Point.js"></script>
+<script src="Shape/Joint.js"></script>
+<script src="Shape/EndPoint.js"></script>
+<script src="Shape/DrawnSegment.js"></script>
+<script src="Shape/DrawnShape.js"></script>
+<script src="Shape/Segment.js"></script>
+<script src="Shape/Shape.js"></script>
+<script src="Shape/ArcDrawnSegment.js"></script>
+<script src="Shape/ArcJoint.js"></script>
+<script src="Shape/ArcSegment.js"></script>
+<script src="Shape/ArrowDrawnSegment.js"></script>
+<script src="Shape/ArrowEndPoint.js"></script>
+<script src="Shape/Line.js"></script>
+<script src="Shape/LineDrawnSegment.js"></script>
+<script src="Shape/LineSegment.js"></script>
+<script src="Shape/PolyLineShape.js"></script>
+<script src="Shape/RectangleShape.js"></script>
+<script src="Shape/RoundedRectangleShape.js"></script>
+<script src="Shape/TextShape.js"></script>
+
+<script src="Shape/LinearTransformation.js"></script>
+<script src="Shape/PathTransformation.js"></script>
+<script src="Shape/ToggleTransformation.js"></script>
+
+<script src="SceneGroup.js"></script>
+<script src="Scene.js"></script>
+<script src="KeyFrame.js"></script>
+<script src="TimeLineControl.js"></script>
+<script src="TimeLineController.js"></script>
+<script src="Track.js"></script>
+<script src="Transition.js"></script>
+<script>
+
+    var context = document.getElementsByTagName('canvas')[0].getContext('2d');
+    var canvas = document.getElementsByTagName('canvas')[0];
+
+    var rectangle = new RectangleShape(150, 25, 150, 100);
+    rectangle.render(context);
+
+    var roundedRectangle = new RoundedRectangleShape(150, 150, 100, 100, 10);
+    roundedRectangle.render(context);
+
+    var points = [new Point(0, 100), new Point(100, 100), new Point(100, 300), new Point(300, 300)];//, new Point(100, 200)];//, new Point(10, 300), new Point(30, 330), new Point(100, 200)];
+
+    var polyLine = new PolyLineShape(points);
+    polyLine.render(context);
+
+    var text = new TextShape("127.0.0.1", 0, 50);
+    text.render(context);
+
+    function onBeforeRendered(timestamp)
+    {
+        //Clear Canvas
+        context.clearRect(0,0,canvas.width,canvas.height);
+    }
+
+    var timeLine = new TimeLineController(0, 20000);
+
+    var timeLineControl = new TimeLineControl(timeLine);
+
+    timeLine.BeforeRenderEvent.subscribe(onBeforeRendered);
+
+    var track = new Track();
+
+    <!--var newLine = new Line(new Path(new Point(0,0), new Point(100,100)));-->
+    <!--var rectangle = new Rectangle(100, 200, 25, 25);-->
+
+    <!--track.FirstKeyFrame.addElement(newLine);-->
+    track.FirstKeyFrame.addElement(rectangle);
+
+    var newKeyFrame = track.addNewKeyFrame(6000);
+    <!--newLine = newKeyFrame.getElement(newLine.Id);-->
+    rectangle = newKeyFrame.getElement(rectangle.Id);
+
+    <!--newLine.Path.Start.X = 0;-->
+    <!--newLine.Path.Start.Y = 100;-->
+    <!--newLine.Path.To.X = 200;-->
+    <!--newLine.Path.To.Y = 0;-->
+
+    rectangle.X = 300;
+    rectangle.Y = 300;
+    rectangle.W = 300;
+    rectangle.H = 50;
+
+    newKeyFrame = track.addNewKeyFrame(15000);
+
+    newLine.Path.Start.X = 100;
+    newLine.Path.Start.Y = 0;
+    newLine.Path.To.X = 0;
+    newLine.Path.To.Y = 300;
+
+    newLine = newKeyFrame.getElement(newLine.Id);
+
+    timeLine.RootSceneGroup.addToScene("test", track);
+
+    track.generateTransitions();
+
+
+    function onClick()
+    {
+        if (timeLine.IsStarted)
+        {
+            timeLine.stop();
+        }
+        else
+        {
+            timeLine.start(timeLine.CurrentTime);
+        }
+    }
+
+
+
+</script>
+
+<button type="button" onclick="onClick()">Click Me!</button>
+</body>
+</html>
