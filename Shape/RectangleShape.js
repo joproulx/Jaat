@@ -9,17 +9,16 @@
 
 var RectangleShape = Shape.extend(
 {
-    init: function(x, y, w, h)
-    {
+    init: function (x, y, w, h) {
         var segment1 = new LineSegment(joint1, joint2);
         var segment2 = new LineSegment(joint2, joint3);
         var segment3 = new LineSegment(joint3, joint4);
         var segment4 = new LineSegment(joint4, joint1);
 
         var joint1 = new Joint(new Point(x, y), segment4, segment1);
-        var joint2 = new Joint(new Point(x+w, y), segment1, segment2);
-        var joint3 = new Joint(new Point(x+w, y+h), segment2, segment3);
-        var joint4 = new Joint(new Point(x, y+h), segment3, segment4);
+        var joint2 = new Joint(new Point(x + w, y), segment1, segment2);
+        var joint3 = new Joint(new Point(x + w, y + h), segment2, segment3);
+        var joint4 = new Joint(new Point(x, y + h), segment3, segment4);
 
         segment1.setJoints(joint1, joint2);
         segment2.setJoints(joint2, joint3);
