@@ -16,52 +16,49 @@
 
 var PolyLineShape = Shape.extend(
     {
-        init: function(points)
-        {
+        init: function (points) {
             this.isRoundedCorner = true;
-            var lastSegment = null;
-
+            
             var segments = new Array();
             var joints = new Array();
 
-            for(var i = 0; i < points.length; i++)
-            {
+            for (var i = 0; i < points.length; i++) {
                 var joint;
 
-
-                if (i < points.length-1)
-                {
+                if (i < points.length - 1) {
                     var segment = new LineSegment();
                     segments.push(segment);
                 }
-                if (i == 0)
-                {
-                    joint = new ArrowEndPoint(points[i], segments[i], 30, 15);
+                if (i == 0) {
+                    joint = new ArrowEndPoint(points[i], 30, 15);
                     //joint = new EndPoint(points[i], segments[i]);
+
+                    joint.setSegment(segments[i]);
                 }
-                else if (i == points.length - 1)
-                {
+                else if (i == points.length - 1) {
                     //joint = new EndPoint(points[i], segments[i-1]);
-                    joint = new ArrowEndPoint(points[i], segments[i-1], 30, 15);
+                    joint = new ArrowEndPoint(points[i], 30, 15);
+
+                    joint.setSegment(segments[i-1]);
                 }
-                else
-                {
-                    if (this.isRoundedCorner)
-                    {
-                        joint = new ArcJoint(points[i], segments[i-1], segments[i], 40);
+                else {
+                    if (this.isRoundedCorner) {
+                        joint = new ArcJoint(points[i], 40);
                     }
-                    else
-                    {
-                        joint = new Joint(points[i], segments[i-1], segments[i]);
+                    else {
+                        joint = new Joint(points[i]);
                     }
+
+                    joint.setSegments(segments[i - 1], segments[i]);
                 }
+                
+
 
                 joints.push(joint);
             }
 
-            for(var i = 0; i < joints.length-1; i++)
-            {
-                segments[i].setJoints(joints[i], joints[i+1]);
+            for (var j = 0; j < joints.length - 1; j++) {
+                segments[j].setJoints(joints[j], joints[j + 1]);
             }
 
             var path = new Path(segments, false);

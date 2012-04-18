@@ -6,6 +6,7 @@
 </head>
 <body>
 <canvas width="800" height="450"></canvas>
+<!--<script src="http://documentcloud.github.com/backbone/backbone.js"></script>-->
 <script src="Common/Class.js"></script>
 <script src="Common/Sylvester.src.js"></script>
 <script src="Common/DynamicProperty.js"></script>
@@ -51,8 +52,8 @@
 <script src="TimeLineController.js"></script>
 <script src="Track.js"></script>
 <script src="Transition.js"></script>
-<script>
-
+<script type="text/javascript">
+    debugger;
     var context = document.getElementsByTagName('canvas')[0].getContext('2d');
     var canvas = document.getElementsByTagName('canvas')[0];
 
@@ -106,12 +107,12 @@
 
     newKeyFrame = track.addNewKeyFrame(15000);
 
-    newLine.Path.Start.X = 100;
-    newLine.Path.Start.Y = 0;
-    newLine.Path.To.X = 0;
-    newLine.Path.To.Y = 300;
+//    newLine.Path.Start.X = 100;
+//    newLine.Path.Start.Y = 0;
+//    newLine.Path.To.X = 0;
+//    newLine.Path.To.Y = 300;
 
-    newLine = newKeyFrame.getElement(newLine.Id);
+//    newLine = newKeyFrame.getElement(newLine.Id);
 
     timeLine.RootSceneGroup.addToScene("test", track);
 

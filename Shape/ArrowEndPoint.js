@@ -1,13 +1,13 @@
 
 var ArrowEndPoint = EndPoint.extend({
-    init: function(point, segment, arrowLength, arrowWidth)
+    init: function(point, arrowLength, arrowWidth)
     {
         if (arrowLength == Infinity || arrowWidth == Infinity)
         {
             alert("You must provide arrow width and arrow length");
         }
 
-        this._super(point, segment);
+        this._super(point);
         this.ArrowLength = arrowLength;
         this.ArrowWidth = arrowWidth;
     },

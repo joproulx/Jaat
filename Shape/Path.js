@@ -5,10 +5,6 @@ var Path = Class.extend(
             this.isClosedPath = isClosedPath;
         },
         copy: function(other) {
-            for (var i = 0; i < other.Segments.length; i++) {
-                var segment = other.Segments[i];
-                this.Segments.push(segment.clone());
-            }
             this.isClosedPath = other.isClosedPath;
         },
         clone: function() {

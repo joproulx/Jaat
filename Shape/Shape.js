@@ -1,33 +1,25 @@
 
 var Shape = Class.extend(
 {
-    init: function(path)
-    {
+    init: function (path) {
         this.Id = generateGuid();
         this.Path = path;
         this.DrawnShape = null;
     },
-    createDrawnShape: function()
-    {
+    createDrawnShape: function () {
         return new DrawnShape(this);
     },
-    render: function(context)
-    {
-        if (this.DrawnShape == null)
-        {
+    render: function (context) {
+        if (this.DrawnShape == null) {
             this.DrawnShape = this.createDrawnShape();
         }
 
         this.DrawnShape.render(context);
     },
-    copy: function(other)
-    {
+    copy: function (other) {
         this.Id = other.Id;
-        this.Path = other.Path.clone();
-        this.DrawnShape = other.DrawnShape.clone();
     },
-    clone: function()
-    {
+    clone: function () {
         var newShape = new Shape(null);
         newShape.copy(this);
         return newShape;

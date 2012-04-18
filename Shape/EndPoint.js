@@ -1,8 +1,8 @@
 
 var EndPoint = Joint.extend({
-    init: function(point, segment)
+    init: function(point)
     {
-        this._super(point, segment, segment);
+        this._super(point);
     },
     createDrawnSegment: function()
     {
@@ -11,5 +11,8 @@ var EndPoint = Joint.extend({
     isStartEndPoint: function()
     {
         return this.Segment1.Joint1 == this;
+    },
+    setSegment: function (segment) {
+        return this.setSegments(segment, segment);
     }
 });

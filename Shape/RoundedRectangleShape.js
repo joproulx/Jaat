@@ -1,17 +1,21 @@
 var RoundedRectangleShape = Shape.extend(
     {
-        init: function(x, y, w, h, l)
-        {
+        init: function (x, y, w, h, l) {
+            var segment1 = new LineSegment();
+            var segment2 = new LineSegment();
+            var segment3 = new LineSegment();
+            var segment4 = new LineSegment();
 
-            var segment1 = new LineSegment(joint1, joint2);
-            var segment2 = new LineSegment(joint2, joint3);
-            var segment3 = new LineSegment(joint3, joint4);
-            var segment4 = new LineSegment(joint4, joint1);
+            var joint1 = new ArcJoint(new Point(x, y), l);
+            var joint2 = new ArcJoint(new Point(x + w, y), l);
+            var joint3 = new ArcJoint(new Point(x + w, y + h), l);
+            var joint4 = new ArcJoint(new Point(x, y + h), l);
 
-            var joint1 = new ArcJoint(new Point(x, y), segment4, segment1, l);
-            var joint2 = new ArcJoint(new Point(x+w, y), segment1, segment2, l);
-            var joint3 = new ArcJoint(new Point(x+w, y+h), segment2, segment3, l);
-            var joint4 = new ArcJoint(new Point(x, y+h), segment3, segment4, l);
+            joint1.setSegments(segment4, segment1);
+            joint2.setSegments(segment1, segment2);
+            joint3.setSegments(segment2, segment3);
+            joint4.setSegments(segment3, segment4);
+
 
             segment1.setJoints(joint1, joint2);
             segment2.setJoints(joint2, joint3);
