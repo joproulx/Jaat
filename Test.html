@@ -44,6 +44,7 @@
 <script src="Transformation/LinearTransformation.js"></script>
 <script src="Transformation/PathTransformation.js"></script>
 <script src="Transformation/ToggleTransformation.js"></script>
+<script src="Transformation/PointTransformation.js"></script>
 
 <script src="SceneGroup.js"></script>
 <script src="Scene.js"></script>
@@ -53,23 +54,22 @@
 <script src="Track.js"></script>
 <script src="Transition.js"></script>
 <script type="text/javascript">
-    debugger;
     var context = document.getElementsByTagName('canvas')[0].getContext('2d');
     var canvas = document.getElementsByTagName('canvas')[0];
 
     var rectangle = new RectangleShape(150, 25, 150, 100);
-    rectangle.render(context);
+    rectangle.render(context, 0);
 
     var roundedRectangle = new RoundedRectangleShape(150, 150, 100, 100, 10);
-    roundedRectangle.render(context);
+    roundedRectangle.render(context, 0);
 
     var points = [new Point(0, 100), new Point(100, 100), new Point(100, 300), new Point(300, 300)];//, new Point(100, 200)];//, new Point(10, 300), new Point(30, 330), new Point(100, 200)];
 
     var polyLine = new PolyLineShape(points);
-    polyLine.render(context);
+    polyLine.render(context, 0);
 
-    var text = new TextShape("127.0.0.1", 0, 50);
-    text.render(context);
+//    var text = new TextShape("127.0.0.1", 0, 50);
+//    text.render(context);
 
     function onBeforeRendered(timestamp)
     {
@@ -77,7 +77,7 @@
         context.clearRect(0,0,canvas.width,canvas.height);
     }
 
-    var timeLine = new TimeLineController(0, 20000);
+    var timeLine = new TimeLineController(0, 20000, context);
 
     var timeLineControl = new TimeLineControl(timeLine);
 
@@ -85,25 +85,25 @@
 
     var track = new Track();
 
-    <!--var newLine = new Line(new Path(new Point(0,0), new Point(100,100)));-->
-    <!--var rectangle = new Rectangle(100, 200, 25, 25);-->
+   // <!--var newLine = new Line(new Path(new Point(0,0), new Point(100,100)));-->
+   // <!--var rectangle = new Rectangle(100, 200, 25, 25);-->
 
-    <!--track.FirstKeyFrame.addElement(newLine);-->
+    //<!--track.FirstKeyFrame.addElement(newLine);-->
     track.FirstKeyFrame.addElement(rectangle);
 
     var newKeyFrame = track.addNewKeyFrame(6000);
-    <!--newLine = newKeyFrame.getElement(newLine.Id);-->
-    rectangle = newKeyFrame.getElement(rectangle.Id);
+    //<!--newLine = newKeyFrame.getElement(newLine.Id);-->
+    var rectangle2 = newKeyFrame.getElement(rectangle.Id);
 
-    <!--newLine.Path.Start.X = 0;-->
-    <!--newLine.Path.Start.Y = 100;-->
-    <!--newLine.Path.To.X = 200;-->
-    <!--newLine.Path.To.Y = 0;-->
-
-    rectangle.X = 300;
-    rectangle.Y = 300;
-    rectangle.W = 300;
-    rectangle.H = 50;
+//    <!--newLine.Path.Start.X = 0;-->
+//    <!--newLine.Path.Start.Y = 100;-->
+//    <!--newLine.Path.To.X = 200;-->
+//    <!--newLine.Path.To.Y = 0;-->
+    rectangle2.setSize(300, 300, 300, 50);
+//    rectangle2.X = 300;
+//    rectangle2.Y = 300;
+//    rectangle2.W = 300;
+//    rectangle2.H = 50;
 
     newKeyFrame = track.addNewKeyFrame(15000);
 
@@ -115,10 +115,8 @@
 //    newLine = newKeyFrame.getElement(newLine.Id);
 
     timeLine.RootSceneGroup.addToScene("test", track);
-
     track.generateTransitions();
-
-
+    
     function onClick()
     {
         if (timeLine.IsStarted)

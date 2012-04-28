@@ -11,10 +11,10 @@ function Scene(sceneGroup)
 }
 
 
-function Scene_render(time)
+function Scene_render(context, timestamp)
 {
     for(var i = 0; i < this.m_arraySceneItems.length; i++)
     {
-        this.m_arraySceneItems[i].render(time);
+        this.m_arraySceneItems[i].render(context, timestamp);
     }
 }

@@ -33,10 +33,10 @@ function SceneGroup_addToScene(name, item)
     return item;
 }
 
-function SceneGroup_render(time)
+function SceneGroup_render(context, timestamp)
 {
     for(var i in this.m_arraySceneItems)
     {
-        this.m_arraySceneItems[i].render(time);
+        this.m_arraySceneItems[i].render(context, timestamp);
     }
 }

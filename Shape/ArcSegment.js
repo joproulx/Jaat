@@ -12,7 +12,7 @@ var ArcSegment = Segment.extend({
     setJoints: function (joint1, joint2) {
         this.Joint1 = joint1;
         this.Joint2 = joint2;
-        this.Line = new Line(slope, 0);
+        this.Line = new Line(null, null, slope, 0);
     },
     copy: function (other) {
         this._super(other);

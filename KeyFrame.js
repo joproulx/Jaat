@@ -53,13 +53,13 @@ function KeyFrame(timestamp)
 
 
 
-    this.render = function(timestamp)
+    this.render = function(context, timestamp)
     {
 
         for(var i = 0; i< this.Elements.length; i++)
         {
             var element = this.Elements[i];
-            element.render(timestamp);
+            element.render(context, timestamp);
         }
     }
 }

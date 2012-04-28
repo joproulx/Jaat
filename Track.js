@@ -12,7 +12,7 @@ function Track()
 //        this.m_transitions.push(transition);
 //    }
 
-    this.render = function(timestamp)
+    this.render = function(context, timestamp)
     {
         // Todo: improve performance by avoiding getting always the last keyframe
         var keyFrame = this.getPreviousKeyFrame(timestamp);
@@ -21,11 +21,11 @@ function Track()
         {
             if (keyFrame.Transition != null)
             {
-                keyFrame.Transition.render(timestamp);
+                keyFrame.Transition.render(context, timestamp);
             }
             else
             {
-                keyFrame.render(timestamp);
+                keyFrame.render(context, timestamp);
             }
         }
     }

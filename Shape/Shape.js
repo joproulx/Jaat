@@ -9,12 +9,12 @@ var Shape = Class.extend(
     createDrawnShape: function () {
         return new DrawnShape(this);
     },
-    render: function (context) {
+    render: function (context, timestamp) {
         if (this.DrawnShape == null) {
             this.DrawnShape = this.createDrawnShape();
         }
 
-        this.DrawnShape.render(context);
+        this.DrawnShape.render(context, timestamp);
     },
     copy: function (other) {
         this.Id = other.Id;

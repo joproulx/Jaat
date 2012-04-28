@@ -7,8 +7,9 @@
  */
 
 
-function TimeLineController(startTimestamp, endTimestamp)
-{
+function TimeLineController(startTimestamp, endTimestamp, context) {
+
+    this.Context = context;
     this.onTimeout = TimeLineController_onTimeout;
     this.start = TimeLineController_start;
     this.stop = TimeLineController_stop;
@@ -46,19 +47,19 @@ function TimeLineController_seek(timestamp)
 
     if (!this.IsStarted)
     {
-        this.renderFrame(this.CurrentTime);
+        this.renderFrame(this.Context, this.CurrentTime);
     }
 }
 
 function TimeLineController_onTimeout(from, elapsedTime)
 {
     from.CurrentTime += elapsedTime;
-    from.renderFrame(from.CurrentTime);
+    from.renderFrame(from.Context, from.CurrentTime);
 }
 
-function TimeLineController_renderFrame(timestamp)
+function TimeLineController_renderFrame(context, timestamp)
 {
     this.BeforeRenderEvent.trigger(timestamp);
-    this.RootSceneGroup.render(timestamp);
+    this.RootSceneGroup.render(context, timestamp);
     this.RenderEvent.trigger(timestamp);
 }
