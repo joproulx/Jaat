@@ -1,16 +1,27 @@
 var Path = Class.extend(
     {
-        init: function(segments, isClosedPath) {
+        init:function (segments, isClosedPath) {
             this.Segments = segments;
             this.isClosedPath = isClosedPath;
         },
-        copy: function(other) {
+        copy:function (other) {
             this.isClosedPath = other.isClosedPath;
         },
-        clone: function() {
+        clone:function () {
             var newPath = new Path(null, null);
             newPath.copy(this);
             return newPath;
+        },
+        toString:function () {
+            var result = "";
+            for (var i = 0; i < this.Segments.length; i++) {
+                result += " " + this.Segments[i].Joint1.toString() + " [Segment]";
+
+                if (i == (this.Segments.length - 1)){
+                    result += " " + this.Segments[i].Joint2.toString();
+                }
+            }
+            return result;
         }
     });
 

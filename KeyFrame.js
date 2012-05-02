@@ -39,6 +39,15 @@ function KeyFrame(timestamp)
         this.Elements.push(element.clone());
     }
 
+    this.addElements = function(elements)
+    {
+        for (var i = 0; i < elements.length; i++)
+        {
+            this.addElement(elements[i]);
+        }
+    }
+
+
     this.getElement = function(id)
     {
         for(var i = 0; i< this.Elements.length; i++)

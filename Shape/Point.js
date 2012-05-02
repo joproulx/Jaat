@@ -41,5 +41,9 @@ function Point(x, y)
     }
     this.equals = function(other) {
         return other.X == this.X && other.Y == this.Y;
-    };
-}
+    }
+    this.toString = function()
+    {
+        return this.X + ", " + this.Y;
+    }
+};

@@ -23,6 +23,9 @@ var Shape = Class.extend(
         var newShape = new Shape(null);
         newShape.copy(this);
         return newShape;
+    },
+    toString:function () {
+        return "{ID:"  + this.Id + "\r\n" + this.Path.toString() + "}";
     }
 });
 

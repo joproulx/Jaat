@@ -20,5 +20,9 @@ var Joint = Class.extend(
             var newJoint = new Joint(null);
             newJoint.copy(this);
             return newJoint;
+        },
+        toString:function () {
+            return "[Joint {" + this.Point.toString() + "}]";
+
         }
     });

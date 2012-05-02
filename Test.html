@@ -7,6 +7,7 @@
 <body>
 <canvas width="800" height="450"></canvas>
 <!--<script src="http://documentcloud.github.com/backbone/backbone.js"></script>-->
+<script type="text/javascript" src="Library/log4javascript/log4javascript_uncompressed.js"></script>
 <script src="Common/Class.js"></script>
 <script src="Common/Sylvester.src.js"></script>
 <script src="Common/DynamicProperty.js"></script>
@@ -65,11 +66,14 @@
 
     var points = [new Point(0, 100), new Point(100, 100), new Point(100, 300), new Point(300, 300)];//, new Point(100, 200)];//, new Point(10, 300), new Point(30, 330), new Point(100, 200)];
 
-    var polyLine = new PolyLineShape(points);
+    var polyLine = new PolyLineShape(points, true, false);
+
+    log4javascript.getDefaultLogger().info(polyLine.toString());
+
     polyLine.render(context, 0);
 
-//    var text = new TextShape("127.0.0.1", 0, 50);
-//    text.render(context);
+    var text = new TextShape("127.0.0.1", 0, 50);
+    text.render(context);
 
     function onBeforeRendered(timestamp)
     {
@@ -84,35 +88,19 @@
     timeLine.BeforeRenderEvent.subscribe(onBeforeRendered);
 
     var track = new Track();
-
-   // <!--var newLine = new Line(new Path(new Point(0,0), new Point(100,100)));-->
-   // <!--var rectangle = new Rectangle(100, 200, 25, 25);-->
-
-    //<!--track.FirstKeyFrame.addElement(newLine);-->
-    track.FirstKeyFrame.addElement(rectangle);
+    track.FirstKeyFrame.addElements([rectangle, polyLine]);
 
     var newKeyFrame = track.addNewKeyFrame(6000);
-    //<!--newLine = newKeyFrame.getElement(newLine.Id);-->
+    polyLine = newKeyFrame.getElement(polyLine.Id);
     var rectangle2 = newKeyFrame.getElement(rectangle.Id);
 
-//    <!--newLine.Path.Start.X = 0;-->
-//    <!--newLine.Path.Start.Y = 100;-->
-//    <!--newLine.Path.To.X = 200;-->
-//    <!--newLine.Path.To.Y = 0;-->
+    polyLine.setPoints([new Point(0, 100), new Point(100, 100), new Point(100, 300), new Point(400, 400)]);
+
+    log4javascript.getDefaultLogger().info(polyLine.toString());
+
     rectangle2.setSize(300, 300, 300, 50);
-//    rectangle2.X = 300;
-//    rectangle2.Y = 300;
-//    rectangle2.W = 300;
-//    rectangle2.H = 50;
 
     newKeyFrame = track.addNewKeyFrame(15000);
-
-//    newLine.Path.Start.X = 100;
-//    newLine.Path.Start.Y = 0;
-//    newLine.Path.To.X = 0;
-//    newLine.Path.To.Y = 300;
-
-//    newLine = newKeyFrame.getElement(newLine.Id);
 
     timeLine.RootSceneGroup.addToScene("test", track);
     track.generateTransitions();
