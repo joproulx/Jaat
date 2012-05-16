@@ -9,7 +9,7 @@ function SceneGroup(sceneGroup)
 {
     this.m_parentSceneGroup = sceneGroup;
 
-    this.m_arraySceneItems = new Array();
+    this.m_arraySceneItems = {};
 
     this.createScene = SceneGroup_createScene;
     this.createSceneGroup = SceneGroup_createSceneGroup;

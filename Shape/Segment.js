@@ -7,16 +7,16 @@
  */
 var Segment = Class.extend(
     {
-        init: function () {
+        init:function () {
             this.Joint1 = null;
             this.Joint2 = null;
 
         },
-        copy: function (other) {
-            
+        copy:function (other) {
+
         },
-        clone: function () {
-            
+        clone:function () {
+
         }
 
     });

@@ -6,22 +6,18 @@
  * To change this template use File | Settings | File Templates.
  */
 var ArrowDrawnSegment = DrawnSegment.extend({
-    init: function(arrowEndPoint)
-    {
-
+    init:function (arrowEndPoint) {
         this._super(true);
-        this.IsIndependantShape =true;
+        this.IsIndependantShape = true;
         this.ArrowEndPoint = arrowEndPoint;
-
     },
-    render : function(context)
-    {
-        var linePerpendicular1 = this.ArrowEndPoint.Segment1.getPerpendicularLine(this.getPoint1());
+    render:function (context, timestamp) {
+        var linePerpendicular1 = this.ArrowEndPoint.Segment1.getPerpendicularLine(timestamp, this.getPoint1(timestamp));
 
         var points = new Array();
-        points.push(this.ArrowEndPoint.Point);
+        points.push(this.ArrowEndPoint.Point.get());
 
-        points = points.concat(linePerpendicular1.getPoints(this.getPoint1(), this.ArrowEndPoint.ArrowWidth));
+        points = points.concat(linePerpendicular1.getPoints(timestamp, this.getPoint1(timestamp), this.ArrowEndPoint.ArrowWidth));
 
 
         context.stroke();
@@ -30,7 +26,7 @@ var ArrowDrawnSegment = DrawnSegment.extend({
 
         context.beginPath();
 
-        var point = this.getPoint1();
+        var point = this.getPoint1(timestamp);
         context.moveTo(point.X, point.Y);
 
         context.lineTo(points[1].X, points[1].Y);
@@ -44,19 +40,15 @@ var ArrowDrawnSegment = DrawnSegment.extend({
         context.moveTo(point.X, point.Y);
 
     },
-    getPoint1: function()
-    {
-        if (this.IsCorner)
-        {
-            return this.ArrowEndPoint.Segment1.pointFromLength(this.ArrowEndPoint.isStartEndPoint() ? this.ArrowEndPoint.ArrowLength :
-                                                                                        this.ArrowEndPoint.Segment1.length() - this.ArrowEndPoint.ArrowLength);
+    getPoint1:function (timestamp) {
+        if (this.IsCorner) {
+            return this.ArrowEndPoint.Segment1.pointFromLength(timestamp, this.ArrowEndPoint.isStartEndPoint() ? this.ArrowEndPoint.ArrowLength :
+                this.ArrowEndPoint.Segment1.length(timestamp) - this.ArrowEndPoint.ArrowLength);
         }
     },
-    getPoint2: function()
-    {
-        if (this.IsCorner)
-        {
-            return this.getPoint1();
+    getPoint2:function (timestamp) {
+        if (this.IsCorner) {
+            return this.getPoint1(timestamp);
         }
 
     }

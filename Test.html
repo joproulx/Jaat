@@ -7,8 +7,10 @@
 <body>
 <canvas width="800" height="450"></canvas>
 <!--<script src="http://documentcloud.github.com/backbone/backbone.js"></script>-->
+<script type="text/javascript" src="Library/Underscore/Underscore.js"></script>
 <script type="text/javascript" src="Library/log4javascript/log4javascript_uncompressed.js"></script>
 <script src="Common/Class.js"></script>
+<script src="Common/TimedValue.js"></script>
 <script src="Common/Sylvester.src.js"></script>
 <script src="Common/DynamicProperty.js"></script>
 <script src="Common/Event.js"></script>
@@ -42,6 +44,8 @@
 <script src="Shape/RoundedRectangleShape.js"></script>
 <script src="Shape/TextShape.js"></script>
 
+<script src="Transformation/LinearTransition.js"></script>
+<script src="Transformation/PointLinearTransition.js"></script>
 <script src="Transformation/LinearTransformation.js"></script>
 <script src="Transformation/PathTransformation.js"></script>
 <script src="Transformation/ToggleTransformation.js"></script>
@@ -57,23 +61,29 @@
 <script type="text/javascript">
     var context = document.getElementsByTagName('canvas')[0].getContext('2d');
     var canvas = document.getElementsByTagName('canvas')[0];
-
-    var rectangle = new RectangleShape(150, 25, 150, 100);
+/*
+    var rectangle = new RectangleShape(0, 150, 25, 150, 100);
     rectangle.render(context, 0);
 
-    var roundedRectangle = new RoundedRectangleShape(150, 150, 100, 100, 10);
+    var roundedRectangle = new RoundedRectangleShape(0, 150, 150, 100, 100, 10);
     roundedRectangle.render(context, 0);
-
+  */
     var points = [new Point(0, 100), new Point(100, 100), new Point(100, 300), new Point(300, 300)];//, new Point(100, 200)];//, new Point(10, 300), new Point(30, 330), new Point(100, 200)];
 
-    var polyLine = new PolyLineShape(points, true, false);
+    //var points = [new Point(0, 100), new Point(100, 100), new Point(200, 100)];
 
-    log4javascript.getDefaultLogger().info(polyLine.toString());
+    var polyLine = new PolyLineShape(0, points, false, false);
 
-    polyLine.render(context, 0);
+    //polyLine.Points[0].set(new Point(0, 200), 10000, new PointLinearTransition());
+    polyLine.Points[2].set(new Point(200, 200), 10000, new PointLinearTransition());
 
-    var text = new TextShape("127.0.0.1", 0, 50);
-    text.render(context);
+
+    //log4javascript.getDefaultLogger().info(polyLine.toString());
+
+    polyLine.render(context, 15);
+
+//    var text = new TextShape("127.0.0.1", 0, 50);
+//    text.render(context);
 
     function onBeforeRendered(timestamp)
     {
@@ -86,25 +96,28 @@
     var timeLineControl = new TimeLineControl(timeLine);
 
     timeLine.BeforeRenderEvent.subscribe(onBeforeRendered);
+    timeLine.RootSceneGroup.addToScene("test", polyLine);
 
-    var track = new Track();
-    track.FirstKeyFrame.addElements([rectangle, polyLine]);
 
-    var newKeyFrame = track.addNewKeyFrame(6000);
-    polyLine = newKeyFrame.getElement(polyLine.Id);
-    var rectangle2 = newKeyFrame.getElement(rectangle.Id);
-
-    polyLine.setPoints([new Point(0, 100), new Point(100, 100), new Point(100, 300), new Point(400, 400)]);
-
-    log4javascript.getDefaultLogger().info(polyLine.toString());
-
-    rectangle2.setSize(300, 300, 300, 50);
-
-    newKeyFrame = track.addNewKeyFrame(15000);
-
-    timeLine.RootSceneGroup.addToScene("test", track);
-    track.generateTransitions();
-    
+//
+//    var track = new Track();
+//    track.FirstKeyFrame.addElements([rectangle, polyLine]);
+//
+//    var newKeyFrame = track.addNewKeyFrame(6000);
+//    polyLine = newKeyFrame.getElement(polyLine.Id);
+//    var rectangle2 = newKeyFrame.getElement(rectangle.Id);
+//
+//    polyLine.setPoints([new Point(0, 100), new Point(100, 100), new Point(100, 300), new Point(400, 400)]);
+//
+//    log4javascript.getDefaultLogger().info(polyLine.toString());
+//
+//    rectangle2.setSize(300, 300, 300, 50);
+//
+//    newKeyFrame = track.addNewKeyFrame(15000);
+//
+//    timeLine.RootSceneGroup.addToScene("test", track);
+//    track.generateTransitions();
+//
     function onClick()
     {
         if (timeLine.IsStarted)

@@ -4,20 +4,12 @@ var Path = Class.extend(
             this.Segments = segments;
             this.isClosedPath = isClosedPath;
         },
-        copy:function (other) {
-            this.isClosedPath = other.isClosedPath;
-        },
-        clone:function () {
-            var newPath = new Path(null, null);
-            newPath.copy(this);
-            return newPath;
-        },
         toString:function () {
             var result = "";
             for (var i = 0; i < this.Segments.length; i++) {
                 result += " " + this.Segments[i].Joint1.toString() + " [Segment]";
 
-                if (i == (this.Segments.length - 1)){
+                if (i == (this.Segments.length - 1)) {
                     result += " " + this.Segments[i].Joint2.toString();
                 }
             }

@@ -1,40 +1,39 @@
-
 var LineSegment = Segment.extend({
-    init: function () {
+    init:function () {
     },
-    setJoints: function (joint1, joint2) {
+    setJoints:function (joint1, joint2) {
         this.Joint1 = joint1;
         this.Joint2 = joint2;
         this.Line = new Line(joint1.Point, joint2.Point);
     },
-    copy: function (other) {
-        this._super(other);
-    },
-    clone: function () {
-        var newObject = new LineSegment();
-        newObject.copy(this);
-        return newObject;
-    },
-    createDrawnSegment: function () {
+    createDrawnSegment:function () {
         return new LineDrawnSegment(this);
     },
-    getSlope: function () {
-        return this.Line.getSlope();
+    getSlope:function (timestamp) {
+        return this.Line.getSlope(timestamp);
     },
-    pointFromRatio: function (ratio) {
-        return new Point((ratio * this.Joint2.Point.X + (1 - ratio) * this.Joint1.Point.X), (ratio * this.Joint2.Point.Y + (1 - ratio) * this.Joint1.Point.Y));
+    pointFromRatio:function (timestamp, ratio) {
+        var point1 =  this.Joint1.Point.get(timestamp);
+        var point2 =  this.Joint2.Point.get(timestamp);
+
+        return new Point((ratio * point2.X + (1 - ratio) * point1.X),
+                         (ratio * point2.Y + (1 - ratio) * point1.Y));
     },
-    pointFromLength: function (length) {
-        return this.pointFromRatio(length / this.length());
+    pointFromLength:function (timestamp, length) {
+        return this.pointFromRatio(timestamp, length / this.length(timestamp));
     },
-    length: function () {
-        return Math.sqrt(Math.pow(this.Joint2.Point.Y - this.Joint1.Point.Y, 2) + Math.pow(this.Joint2.Point.X - this.Joint1.Point.X, 2));
+    length:function (timestamp) {
+        var point1 =  this.Joint1.Point.get(timestamp);
+        var point2 =  this.Joint2.Point.get(timestamp);
+
+        return Math.sqrt(Math.pow(point2.Y - point1.Y, 2) +
+                         Math.pow(point2.X - point1.X, 2));
     },
-    getPerpendicularLine: function (point) {
-        return this.Line.getPerpendicularLine(point);
+    getPerpendicularLine:function (timestamp, point) {
+        return this.Line.getPerpendicularLine(timestamp, point);
     },
-    getIntersectionPoint: function (otherLine) {
-        return this.Line.getIntersectionPoint(otherLine);
+    getIntersectionPoint:function (timestamp, otherLine) {
+        return this.Line.getIntersectionPoint(timestamp, otherLine);
     }
 
 

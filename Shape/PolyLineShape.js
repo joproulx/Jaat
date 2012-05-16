@@ -15,32 +15,36 @@
 
 
 var PolyLineShape = Shape.extend({
-    init:function (points, hasRoundedCorners, isClosedPath) {
-
-        this.Logger = log4javascript.getDefaultLogger();
-
-        if (points == undefined)
-        {
+    init:function (timestamp, points, hasRoundedCorners, isClosedPath) {
+        if (points == undefined) {
             return;
         }
+
+        //this.Logger = log4javascript.getDefaultLogger();
         this.isRoundedCorner = hasRoundedCorners;
         this.IsClosedPath = isClosedPath;
         var segments = new Array();
         this.Joints = new Array();
-        this.Points = points;
+        this.Points = _.map(points, function (value) {
+            var point = new TimedValue();
+            point.set(value, timestamp);
+            return point;
+        });
 
-        for (var i = 0; i < points.length; i++) {
+        for (var i = 0; i < this.Points.length; i++) {
             var joint = null;
+            var point = this.Points[i];
 
             if (!isClosedPath && (i == 0 || i == (points.length - 1))) {
-                this.Joints.push(new ArrowEndPoint(points[i], 30, 15));
+                //this.Joints.push(new ArrowEndPoint(point, 30, 15));
+                this.Joints.push(new EndPoint(point, 30, 15));
             }
             else {
                 if (this.isRoundedCorner) {
-                    this.Joints.push(new ArcJoint(points[i], 40));
+                    this.Joints.push(new ArcJoint(point, 40));
                 }
                 else {
-                    this.Joints.push(new Joint(points[i]));
+                    this.Joints.push(new Joint(point));
                 }
             }
         }
@@ -53,50 +57,10 @@ var PolyLineShape = Shape.extend({
         }
 
         this._linkJointsAndSegments(segments);
-
         var path = new Path(segments, isClosedPath);
-
         this._super(path);
     },
-    clone: function () {
-        var newShape = new PolyLineShape();
-        newShape.copy(this);
-        return newShape;
-    },
-    copy:function (other) {
-        this._super(other);
-
-        this.IsRoundCorner = other.IsRoundCorner;
-        this.IsClosedPath = other.IsClosedPath;
-
-        this.Points = new Array();
-
-        this.Path = other.Path.clone();
-        var segments = new Array();
-        for (var i = 0; i < other.Path.Segments.length; i++) {
-            segments.push(other.Path.Segments[i].clone());
-        }
-
-        this.Path.Segments = segments;
-        this.Joints = new Array();
-
-        for (var i = 0; i < other.Path.Segments.length; i++) {
-            this.Joints.push(other.Path.Segments[i].Joint1.clone());
-
-            if (!this.IsClosedPath && i == (other.Path.Segments.length - 1))
-            {
-                this.Joints.push(other.Path.Segments[i].Joint2.clone());
-            }
-        }
-
-        for (var i = 0; i < this.Joints.length; i++) {
-            this.Points.push(this.Joints[i].Point);
-        }
-
-        this._linkJointsAndSegments(segments);
-    },
-    _linkJointsAndSegments: function(segments) {
-
+    _linkJointsAndSegments:function (segments) {
         for (var i = 0; i < this.Joints.length; i++) {
             if (i == 0) {
                 if (!this.IsClosedPath) {
@@ -133,27 +97,6 @@ var PolyLineShape = Shape.extend({
             }
         }
     },
-    setPoints:function (points) {
-        if (points.length != this.Points.length) {
-            this.Logger.error("PolyLineShape.setPoints() -> Invalid argument");
-            return;
-        }
-
-        for (var i = 0; i < this.Points.length; i++) {
-            this.Points[i].copy(points[i]);
-        }
-    },
-    generateTransformations: function (other, startTime, endTime) {
-        var transformations = new Array();
-
-        for (var i = 0; i < this.Joints.length; i++) {
-            if (!other.Joints[i].Point.equals(this.Joints[i].Point)) {
-                transformations.push(new PointTransformation(this.Joints[i].Point, this.Joints[i].Point.clone(), other.Joints[i].Point.clone(), startTime, endTime));
-            }
-        }
-
-        return transformations;
-    } ,
     toString:function () {
         return "PolyLineShape " + this._super();
     }
