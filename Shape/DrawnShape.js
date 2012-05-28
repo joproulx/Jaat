@@ -62,7 +62,7 @@ var DrawnShape = Class.extend(
         render:function (context, timestamp) {
             for (var i = 0; i < this.DrawnSegments.length; i++) {
                 if (i == 0 || this.DrawnSegments[i - 1].IsIndependantShape) {
-                    this.beginRender(context);
+                    this.beginRender(context, timestamp);
                     var point = this.DrawnSegments[i].getPoint1(timestamp);
                     context.moveTo(point.X, point.Y);
                 }
@@ -74,13 +74,16 @@ var DrawnShape = Class.extend(
                 }
             }
         },
-        beginRender:function (context) {
+        beginRender:function (context, timestamp) {
             var strokeStyle = '#AAAAAA';
             var lineWidth = 10;
             context.save();
             context.beginPath();
             context.fillStyle = strokeStyle;
-            context.strokeStyle = strokeStyle;
+
+            var rgb = this.Shape.StrokeColor.get(timestamp);
+            // TODO: optimize how the rgb are passed to canvas
+            context.strokeStyle = 'rgba(' + Math.round(rgb.R) + ', '+ Math.round(rgb.G) + ', '+ Math.round(rgb.B) + ', ' + this.Shape.StrokeOpacity.get(timestamp) + ')';
             context.lineWidth = lineWidth;
             context.lineJoin = "miter";
         },

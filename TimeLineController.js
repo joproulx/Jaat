@@ -22,7 +22,6 @@ function TimeLineController(startTimestamp, endTimestamp, context) {
     this.StartTimestamp = startTimestamp;
     this.EndTimestamp = endTimestamp;
 
-    this.RootSceneGroup = new SceneGroup();
     this.CurrentTime = 0;
     this.m_timer = new Timer(this, this.onTimeout);
     this.IsStarted = false;
@@ -59,7 +58,6 @@ function TimeLineController_onTimeout(from, elapsedTime)
 
 function TimeLineController_renderFrame(context, timestamp)
 {
-    this.BeforeRenderEvent.trigger(timestamp);
-    this.RootSceneGroup.render(context, timestamp);
-    this.RenderEvent.trigger(timestamp);
+    this.BeforeRenderEvent.trigger(context, timestamp);
+    this.RenderEvent.trigger(context, timestamp);
 }

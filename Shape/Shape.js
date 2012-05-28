@@ -5,6 +5,10 @@ var Shape = Class.extend(
             this.Path = null;
             this.DrawnShape = null;
             this.Path = path;
+            this.StrokeColor = new TimedValue(function() { return new ColorLinearTransition(); });
+            this.StrokeColor.set({R:0, G:0, B:0});
+            this.StrokeOpacity = new TimedValue(function() { return new LinearTransition(); });
+            this.StrokeOpacity.set(1);
         },
         createDrawnShape:function () {
             return new DrawnShape(this);

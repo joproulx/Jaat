@@ -1,7 +1,8 @@
 var TimedValue = Class.extend(
     {
-        init: function () {
+        init: function (defaultTransitionFactory) {
             this.Values = new Array();
+            this.m_defaultTransitionFactory = defaultTransitionFactory;
         },
         get: function(timestamp)
         {
@@ -35,6 +36,14 @@ var TimedValue = Class.extend(
         },
         set: function(value, timestamp, transition)
         {
+            if (timestamp === undefined){
+                timestamp = 0;
+            }
+
+            if (transition === undefined && this.m_defaultTransitionFactory !== undefined){
+                transition = this.m_defaultTransitionFactory();
+            }
+
             var currentTransition = null;
 
             if (transition != undefined &&

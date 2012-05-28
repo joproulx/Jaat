@@ -9,8 +9,8 @@ function Event(){
     this.eventHandlers = new Array();
 }
 
-Event.prototype.subscribe = function(eventHandler){
-    this.eventHandlers.push(eventHandler);
+Event.prototype.subscribe = function(eventHandler, context){
+    this.eventHandlers.push({ EventHandler: eventHandler, Context: context} );
 }
 
 Event.prototype.unsubscribe = function(eventHandler){
@@ -22,9 +22,9 @@ Event.prototype.unsubscribe = function(eventHandler){
     }
 }
 
-Event.prototype.trigger = function(args){
+Event.prototype.trigger = function(arg1, arg2, arg3){
 
     for(var i = 0; i < this.eventHandlers.length; i++){
-        this.eventHandlers[i](args);
+        this.eventHandlers[i].EventHandler(this.eventHandlers[i].Context, arg1, arg2, arg3);
     }
 }
