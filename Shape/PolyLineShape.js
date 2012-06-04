@@ -20,16 +20,20 @@ var PolyLineShape = Shape.extend({
             return;
         }
 
+        this.SceneNode = new SceneNode();
+        this.SceneNode.setPosition(points[0], timestamp);
+
         //this.Logger = log4javascript.getDefaultLogger();
         this.isRoundedCorner = hasRoundedCorners;
         this.IsClosedPath = isClosedPath;
         var segments = new Array();
         this.Joints = new Array();
         this.Points = _.map(points, function (value) {
-            var point = new TimedValue();
+            var childSceneNode = new SceneNode(this.SceneNode);
+            var point = new SceneNodeTimedValue(childSceneNode);
             point.set(value, timestamp);
             return point;
-        });
+        }.bind(this));
 
         for (var i = 0; i < this.Points.length; i++) {
             var joint = null;

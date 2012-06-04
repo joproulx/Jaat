@@ -9,6 +9,7 @@
 <!--<script src="http://documentcloud.github.com/backbone/backbone.js"></script>-->
 <script type="text/javascript" src="Library/Underscore/Underscore.js"></script>
 <script type="text/javascript" src="Library/log4javascript/log4javascript_uncompressed.js"></script>
+<script type="text/javascript" src="Library/Sylvester/Sylvester.src.js"></script>
 <script src="Common/Class.js"></script>
 <script src="Common/TimedValue.js"></script>
 <script src="Common/Sylvester.src.js"></script>
@@ -19,8 +20,10 @@
 <script src="Common/HashTable.js"></script>
 <script src="Common/PolyFill.js"></script>
 <script src="Common/Timer.js"></script>
+<script src="Common/TransformationMatrixHelper.js"></script>
 
 <script src="SceneNode/SceneNode.js"></script>
+<script src="SceneNode/SceneNodeTimedValue.js"></script>
 <script src="SceneNode/SceneNodeLeaf.js"></script>
 <script src="SceneNode/SceneNodeManager.js"></script>
 <script src="Shape/Path.js"></script>
@@ -47,6 +50,7 @@
 <script src="Transformation/LinearTransition.js"></script>
 <script src="Transformation/PointLinearTransition.js"></script>
 <script src="Transformation/ColorLinearTransition.js"></script>
+<script src="Transformation/TransformationMatrixLinearTransition.js"></script>
 <script src="Transformation/LinearTransformation.js"></script>
 <script src="Transformation/PathTransformation.js"></script>
 <script src="Transformation/ToggleTransformation.js"></script>
@@ -76,11 +80,19 @@
     var polyLine = new PolyLineShape(0, points, false, false);
 
     //polyLine.Points[0].set(new Point(0, 200), 10000, new PointLinearTransition());
-    polyLine.Points[2].set(new Point(200, 200), 10000, new PointLinearTransition());
+    //polyLine.Points[2].set(new Point(200, 200), 10000, new PointLinearTransition());
+
+
+    polyLine.SceneNode.setPosition(new Point(200, 100), 0);
+
+    polyLine.SceneNode.rotate(Math.PI/2, 10000);
+
+    polyLine.SceneNode.setPosition(new Point(100, 100), 5000);
+    //polyLine.SceneNode.rotate(Math.PI/4, 5000);
 
     polyLine.StrokeColor.set({R:255,G:255,B:0}, 5000);
     polyLine.StrokeColor.set({R:0,G:0,B:255}, 10000);
-    polyLine.StrokeOpacity.set(0, 10000);
+    //polyLine.StrokeOpacity.set(0, 10000);
     //log4javascript.getDefaultLogger().info(polyLine.toString());
 
     polyLine.render(context, 15);
@@ -88,10 +100,39 @@
 //    var text = new TextShape("127.0.0.1", 0, 50);
 //    text.render(context);
 
+    function drawGrid(){
+        for(var i  = 0; i < canvas.height; i+=50){
+
+            context.save();
+            context.strokeStyle = "gray";
+            context.lineWidth = 0.5;
+            context.moveTo(0,i);
+            context.lineTo(canvas.width,i);
+            context.stroke();
+            context.restore();
+        }
+
+        for(var i  = 0; i < canvas.width; i+=50){
+            context.save();
+            context.strokeStyle = "gray";
+            context.lineWidth = 0.5;
+            context.moveTo(i,0);
+            context.lineTo(i,canvas.height);
+            context.stroke();
+            context.restore();
+
+        }
+
+
+    }
+
     function onBeforeRendered(timestamp)
     {
         //Clear Canvas
         context.clearRect(0,0,canvas.width,canvas.height);
+
+        drawGrid();
+
     }
     var sceneManager = new SceneManager(0, 20000, context);
 
@@ -99,7 +140,7 @@
 
     sceneManager.TimeLineController.BeforeRenderEvent.subscribe(onBeforeRendered);
     sceneManager.addToScene(polyLine);
-
+    drawGrid();
 
 //
 //    var track = new Track();
