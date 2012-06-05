@@ -80,14 +80,16 @@
     var polyLine = new PolyLineShape(0, points, false, false);
 
     //polyLine.Points[0].set(new Point(0, 200), 10000, new PointLinearTransition());
-    //polyLine.Points[2].set(new Point(200, 200), 10000, new PointLinearTransition());
+    polyLine.Points[2].set(new Point(200, 200), 10000, new PointLinearTransition());
 
 
     polyLine.SceneNode.setPosition(new Point(200, 100), 0);
 
-    polyLine.SceneNode.rotate(Math.PI/2, 10000);
+    polyLine.SceneNode.rotate(Math.PI*-2, 10000);
 
-    polyLine.SceneNode.setPosition(new Point(100, 100), 5000);
+    polyLine.SceneNode.setPosition(new Point(400, 100), 5000);
+
+
     //polyLine.SceneNode.rotate(Math.PI/4, 5000);
 
     polyLine.StrokeColor.set({R:255,G:255,B:0}, 5000);
