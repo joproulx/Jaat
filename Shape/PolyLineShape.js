@@ -104,4 +104,5 @@ var PolyLineShape = Shape.extend({
     toString:function () {
         return "PolyLineShape " + this._super();
     }
+    
 });
