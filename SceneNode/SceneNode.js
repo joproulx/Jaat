@@ -33,6 +33,9 @@ var SceneNode = Class.extend({
     setPosition:function (point, timestamp) {
         this.m_transformationMatrix.set(getTransformationFromPoint(this.getParentTransformationMatrix(timestamp), point.X, point.Y), timestamp);
     },
+    setPath:function (path, timestamp) {
+        this.m_transformationMatrix.set(null, timestamp, new PathTransition(path, this));
+    },
     rotate:function(radian, timestamp){
         var matrix = this.m_transformationMatrix.get(timestamp);
         this.m_transformationMatrix.set(matrix.x(getRotationMatrix(radian)), timestamp);

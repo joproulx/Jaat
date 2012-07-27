@@ -40,5 +40,11 @@ function Point(x, y) {
     this.toString = function () {
         return this.X + ", " + this.Y;
     }
+    this.multiplyBy = function (value) {
+        return new Point(this.X * value, this.Y * value);
+    }
+    this.add = function (point) {
+        return new Point(this.X + point.X, this.Y + point.Y);
+    }
 }
 ;

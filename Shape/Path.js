@@ -1,21 +1,50 @@
-var Path = Class.extend(
-    {
-        init:function (segments, isClosedPath) {
-            this.Segments = segments;
-            this.isClosedPath = isClosedPath;
-        },
-        toString:function () {
-            var result = "";
-            for (var i = 0; i < this.Segments.length; i++) {
-                result += " " + this.Segments[i].Joint1.toString() + " [Segment]";
-
-                if (i == (this.Segments.length - 1)) {
-                    result += " " + this.Segments[i].Joint2.toString();
-                }
-            }
-            return result;
+var Path = Class.extend({
+    init:function (segments, isClosedPath) {
+        this.Segments = segments;
+        this.isClosedPath = isClosedPath;
+    },
+    length:function(timestamp){
+        var length = 0;
+        for (var i = 0; i < this.Segments.length; i++) {
+            length += this.Segments[i].length(timestamp);
         }
-    });
+        return length;
+    },
+    getPointFromRatio:function(timestamp, ratio){
+        if (ratio < 0 || ratio > 1){
+            throw "Invalid parameter: ratio. Must be between 0 and 1.";
+        }
+
+        var length = this.length();
+        var currentLength = 0;
+
+        for (var i = 0; i < this.Segments.length; i++) {
+            var previousLength = currentLength;
+
+            currentLength += this.Segments[i].length(timestamp);
+
+            var ratio1 = previousLength / length;
+            var ratio2 = currentLength / length;
+
+            if (ratio >= ratio1 && ratio <= ratio2){
+                ratio -= ratio1;
+                return this.Segments[i].pointFromRatio(timestamp, ratio);
+            }
+        }
+        return null;
+    },
+    toString:function () {
+        var result = "";
+        for (var i = 0; i < this.Segments.length; i++) {
+            result += " " + this.Segments[i].Joint1.toString() + " [Segment]";
+
+            if (i == (this.Segments.length - 1)) {
+                result += " " + this.Segments[i].Joint2.toString();
+            }
+        }
+        return result;
+    }
+});
 
 //    this.getLineSegments = function()
 //    {

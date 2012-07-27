@@ -11,6 +11,7 @@
 <script type="text/javascript" src="Library/log4javascript/log4javascript_uncompressed.js"></script>
 <script type="text/javascript" src="Library/Sylvester/Sylvester.src.js"></script>
 <script src="Common/Class.js"></script>
+<script src="Common/CachedTimedValue.js"></script>
 <script src="Common/TimedValue.js"></script>
 <script src="Common/Sylvester.src.js"></script>
 <script src="Common/DynamicProperty.js"></script>
@@ -42,12 +43,15 @@
 <script src="Shape/Line.js"></script>
 <script src="Shape/LineDrawnSegment.js"></script>
 <script src="Shape/LineSegment.js"></script>
+<script src="Shape/BezierDrawnSegment.js"></script>
+<script src="Shape/BezierSegment.js"></script>
 <script src="Shape/PolyLineShape.js"></script>
 <script src="Shape/RectangleShape.js"></script>
 <script src="Shape/RoundedRectangleShape.js"></script>
 <script src="Shape/TextShape.js"></script>
 
 <script src="Transformation/LinearTransition.js"></script>
+<script src="Transformation/PathTransition.js"></script>
 <script src="Transformation/PointLinearTransition.js"></script>
 <script src="Transformation/ColorLinearTransition.js"></script>
 <script src="Transformation/TransformationMatrixLinearTransition.js"></script>
@@ -66,18 +70,157 @@
 <script type="text/javascript">
     var context = document.getElementsByTagName('canvas')[0].getContext('2d');
     var canvas = document.getElementsByTagName('canvas')[0];
-/*
-    var rectangle = new RectangleShape(0, 150, 25, 150, 100);
-    rectangle.render(context, 0);
 
-    var roundedRectangle = new RoundedRectangleShape(0, 150, 150, 100, 100, 10);
-    roundedRectangle.render(context, 0);
-  */
+    try
+    {
+        var path = [
+         { X:100, Y:0, JointType:"endPoint" },
+         { SegmentType:"bezier", ControlPoint1:{X:200, Y:0}, ControlPoint2:{X:200, Y:100} },
+         { X:100, Y:100, JointType:"endPoint" }
+        ];
+
+        var path2 = [
+            { X:200, Y:100, JointType:"endPoint" },
+            { SegmentType:"line", ControlPoint1:{X:250, Y:50}, ControlPoint2:{X:250, Y:150} },
+            { X:300, Y:200, JointType:"endPoint" }
+        ];
+
+
+
+
+        //var points1 = [new Point(200, 100), new Point(300, 200)];
+        var polyLine = new PolyLineShape(path, 0);
+
+
+
+//        var points = [new Point(200, 200), new Point(200, 100)];
+        var poly2 = new PolyLineShape(path, 0);
+
+
+//        var bezier = new PolyLineShape(0, points, false, false);
+//
+//
+//
+//        //bezier.for(200).follows(path);
+//
+//
+//
+//
+//        var point1 = new TimedValue(function(){ return new PointLinearTransition(); });
+//        var point2 = new TimedValue(function(){ return new PointLinearTransition(); });
+//        point1.set(new Point(100, 200), 0);
+//        point2.set(new Point(100, 100), 0);
+//
+//        bezier.Path.Segments[0].setControlPoints(point1, point2);
+//
+        poly2.SceneNode.setPosition(new Point(200, 100), 0);
+        poly2.SceneNode.setPath(polyLine.Path, 5000);
+
+        poly2.render(context, 0);
+
+        //var pointx = bezier.Path.Segments[0].pointFromRatio(0, 0.5);
+
+//        t0 = 0;
+//        t1 = 0.5;
+//
+//        u0 = 1.0 - t0
+//        u1 = 1.0 - t1
+//
+//        x1 = points[0].X;
+//        y1 = points[0].Y
+//        x2 = points[1].X;
+//        y2 = points[1].Y
+//        bx1 = point1.get(0).X;
+//        by1 = point1.get(0).Y;
+//        bx2 = point2.get(0).X;
+//        by2 = point2.get(0).Y;
+//
+//        xa =  x1*u0*u0 + bx1*2*t0*u0 + bx2*t0*t0
+//        xb =  x1*u1*u1 + bx1*2*t1*u1 + bx2*t1*t1
+//        xc = bx1*u0*u0 + bx2*2*t0*u0 +  x2*t0*t0
+//        xd = bx1*u1*u1 + bx2*2*t1*u1 +  x2*t1*t1
+//
+//        ya =  y1*u0*u0 + by1*2*t0*u0 + by2*t0*t0
+//        yb =  y1*u1*u1 + by1*2*t1*u1 + by2*t1*t1
+//        yc = by1*u0*u0 + by2*2*t0*u0 +  y2*t0*t0
+//        yd = by1*u1*u1 + by2*2*t1*u1 +  y2*t1*t1
+
+//        t = 0.5;
+//
+//        x1 = points[0].X;
+//        y1 = points[0].Y
+//        x2 = point1.get(0).X;
+//        y2 = point1.get(0).Y
+//        x3 = point2.get(0).X;
+//        y3 = point2.get(0).Y
+//
+//
+//        x4 = points[1].X;
+//        y4 = points[1].Y
+//
+//        x12 = (x2-x1)*t+x1
+//        y12 = (y2-y1)*t+y1
+//
+//        x23 = (x3-x2)*t+x2
+//        y23 = (y3-y2)*t+y2
+//
+//        x34 = (x4-x3)*t+x3
+//        y34 = (y4-y3)*t+y3
+//
+//        x123 = (x23-x12)*t+x12
+//        y123 = (y23-y12)*t+y12
+//
+//        x234 = (x34-x23)*t+x23
+//        y234 = (y34-y23)*t+y23
+//
+//        x1234 = (x234-x123)*t+x123
+//        y1234 = (y234-y123)*t+y123
+//
+//
+//
+//
+//        points2 = [new Point(x1, y1), new Point(x1234, y1234)];
+//        var bezier2 = new PolyLineShape(0, points2, false, false);
+//
+//        point1 = new TimedValue(function(){ return new PointLinearTransition(); });
+//        point2 = new TimedValue(function(){ return new PointLinearTransition(); });
+//        point1.set(new Point(x12, y12), 0);
+//        point2.set(new Point(x123, y123), 0);
+//
+//
+//
+//        bezier2.Path.Segments[0].setControlPoints(point1, point2);
+//
+//
+//
+//        bezier2.SceneNode.setPosition(bezier.Path.getPointFromRatio(0, 0.5), 0);
+//
+//
+//
+//        // var length =bezier.Path.Segments[0].length();
+//
+//
+//
+//
+//    bezier2.render(context, 0);
+    }
+    catch(ex)
+    {
+        alert(ex);
+    }
+
+    /*
+      var rectangle = new RectangleShape(0, 150, 25, 150, 100);
+      rectangle.render(context, 0);
+
+      var roundedRectangle = new RoundedRectangleShape(0, 150, 150, 100, 100, 10);
+      roundedRectangle.render(context, 0);
+    */
     var points = [new Point(0, 100), new Point(100, 100), new Point(100, 300), new Point(300, 300)];//, new Point(100, 200)];//, new Point(10, 300), new Point(30, 330), new Point(100, 200)];
 
     //var points = [new Point(0, 100), new Point(100, 100), new Point(200, 100)];
 
-    var polyLine = new PolyLineShape(0, points, false, false);
+   /* var polyLine = new PolyLineShape(0, points, false, false);
 
     //polyLine.Points[0].set(new Point(0, 200), 10000, new PointLinearTransition());
     polyLine.Points[2].set(new Point(200, 200), 10000, new PointLinearTransition());
@@ -98,7 +241,7 @@
     //log4javascript.getDefaultLogger().info(polyLine.toString());
 
     polyLine.render(context, 15);
-
+*/
 //    var text = new TextShape("127.0.0.1", 0, 50);
 //    text.render(context);
 
@@ -128,20 +271,22 @@
 
     }
 
-    function onBeforeRendered(timestamp)
+    function onBeforeRendered(from, context, timestamp)
     {
         //Clear Canvas
         context.clearRect(0,0,canvas.width,canvas.height);
 
-        drawGrid();
+        //(timestamp / 10000)
+       drawGrid();
 
     }
     var sceneManager = new SceneManager(0, 20000, context);
 
     var timeLineControl = new TimeLineControl(sceneManager.TimeLineController);
 
-    sceneManager.TimeLineController.BeforeRenderEvent.subscribe(onBeforeRendered);
-    sceneManager.addToScene(polyLine);
+    sceneManager.TimeLineController.BeforeRenderEvent.subscribe(onBeforeRendered, this);
+    //sceneManager.addToScene(polyLine);
+    sceneManager.addToScene(poly2);
     drawGrid();
 
 //
