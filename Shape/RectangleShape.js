@@ -5,9 +5,9 @@
  * Time: 12:46 PM
  * To change this template use File | Settings | File Templates.
  */
-var RectangleShape = PolyLineShape.extend(
+var RectangleShape = PolySegmentShape.extend(
     {
-        init:function (timestamp, x, y, w, h) {
+        init:function (t, x, y, w, h) {
             this.X = x;
             this.Y = y;
             this.W = w;
@@ -20,6 +20,6 @@ var RectangleShape = PolyLineShape.extend(
             points.push(new Point(x + w, y + h));
             points.push(new Point(x, y + h));
 
-            this._super(timestamp, points, false, true);
+            this._super(t, points, false, true);
         }
     });

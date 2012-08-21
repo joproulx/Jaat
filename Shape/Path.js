@@ -3,14 +3,28 @@ var Path = Class.extend({
         this.Segments = segments;
         this.isClosedPath = isClosedPath;
     },
-    length:function(timestamp){
+    length:function(t){
         var length = 0;
         for (var i = 0; i < this.Segments.length; i++) {
-            length += this.Segments[i].length(timestamp);
+            length += this.Segments[i].length(t);
         }
         return length;
     },
-    getPointFromRatio:function(timestamp, ratio){
+    getPointFromRatio:function(t, ratio){
+        var segment = this.getSegmentFromRatio(t, ratio);
+        if (segment != null){
+            return segment.Segment.pointFromRatio(t, segment.Ratio);
+        }
+        return null;
+    },
+    getTangentAngleFromRatio:function(t, ratio){
+        var segment = this.getSegmentFromRatio(t, ratio);
+        if (segment != null){
+            return segment.Segment.tangentAngleFromRatio(t, segment.Ratio);
+        }
+        return null;
+    },
+    getSegmentFromRatio:function(t, ratio){
         if (ratio < 0 || ratio > 1){
             throw "Invalid parameter: ratio. Must be between 0 and 1.";
         }
@@ -21,18 +35,19 @@ var Path = Class.extend({
         for (var i = 0; i < this.Segments.length; i++) {
             var previousLength = currentLength;
 
-            currentLength += this.Segments[i].length(timestamp);
+            currentLength += this.Segments[i].length(t);
 
             var ratio1 = previousLength / length;
             var ratio2 = currentLength / length;
 
             if (ratio >= ratio1 && ratio <= ratio2){
-                ratio -= ratio1;
-                return this.Segments[i].pointFromRatio(timestamp, ratio);
+                return {Ratio : (ratio - ratio1) / (ratio2 - ratio1),
+                        Segment: this.Segments[i]};
             }
         }
         return null;
     },
+
     toString:function () {
         var result = "";
         for (var i = 0; i < this.Segments.length; i++) {

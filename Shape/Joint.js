@@ -1,6 +1,6 @@
 var Joint = Class.extend({
-    init:function (point) {
-        this.Point = point;
+    init:function (sceneNode) {
+        this.SceneNode = sceneNode;
     },
     setSegments:function (segment1, segment2) {
         this.Segment1 = segment1;
@@ -9,10 +9,13 @@ var Joint = Class.extend({
     getOtherSegment:function (segment) {
         return (segment == this.Segment1) ? this.Segment2 : this.Segment1;
     },
-    createDrawnSegment:function () {
+    createSegmentRenderer:function () {
         return null;
     },
+    getPosition:function(t){
+        return this.SceneNode.getPosition(t);
+    },
     toString:function () {
-        return "[Joint {" + this.Point.get().toString() + "}]";
+        return "[Joint {" + this.getPosition().toString() + "}]";
     }
 });

@@ -6,9 +6,9 @@ var Scene = Class.extend({
     addElement: function(sceneElement){
         this.m_elements.push(sceneElement);
     },
-    render: function(context, timestamp){
+    render: function(t, context){
         for(var i = 0; i < this.m_elements.length; i++){
-            this.m_elements[i].render(context, timestamp);
+            this.m_elements[i].render(t, context);
         }
     }
 });

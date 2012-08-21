@@ -33,9 +33,9 @@ var SceneManager = Class.extend({
         }
         return this.m_scenes[name];
     },
-    onRender: function(from, context, timestamp){
+    onRender: function(from, t, context){
         for (var scene in from.m_scenes){
-            from.m_scenes[scene].render(context, timestamp);
+            from.m_scenes[scene].render(t, context);
         }
     }
 });

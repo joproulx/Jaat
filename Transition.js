@@ -53,17 +53,17 @@ var Transition = Class.extend(
                 }
             }
         },
-        render: function (context, timestamp) {
+        render: function (t, context) {
             var start = this.StartKeyFrame.Timestamp;
             var end = this.EndKeyFrame.Timestamp;
 
-            if (timestamp < start || timestamp > end) {
+            if (t < start || t > end) {
                 return;
             }
 
             var diff = end - start;
 
-            var ratio = (timestamp - start) / diff;
+            var ratio = (t - start) / diff;
 
             for (var i = 0; i < this.Transformations.length; i++) {
                 var transformation = this.Transformations[i];
@@ -72,7 +72,7 @@ var Transition = Class.extend(
 
             for (var i = 0; i < this.Elements.length; i++) {
                 var element = this.Elements[i];
-                element.render(context, timestamp);
+                element.render(t, context);
             }
         },
         copy: function (other) {

@@ -40,24 +40,24 @@ function TimeLineController_stop()
     this.m_timer.stop();
 }
 
-function TimeLineController_seek(timestamp)
+function TimeLineController_seek(t)
 {
-    this.CurrentTime = timestamp;
+    this.CurrentTime = t;
 
     if (!this.IsStarted)
     {
-        this.renderFrame(this.Context, this.CurrentTime);
+        this.renderFrame(this.CurrentTime, this.Context);
     }
 }
 
 function TimeLineController_onTimeout(from, elapsedTime)
 {
     from.CurrentTime += elapsedTime;
-    from.renderFrame(from.Context, from.CurrentTime);
+    from.renderFrame(from.CurrentTime, from.Context);
 }
 
-function TimeLineController_renderFrame(context, timestamp)
+function TimeLineController_renderFrame(t, context)
 {
-    this.BeforeRenderEvent.trigger(context, timestamp);
-    this.RenderEvent.trigger(context, timestamp);
+    this.BeforeRenderEvent.trigger(t, context);
+    this.RenderEvent.trigger(t, context);
 }

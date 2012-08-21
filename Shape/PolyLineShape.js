@@ -1,94 +1,32 @@
-var PolyLineShape = Shape.extend({
-    init:function (pathJson, timestamp){//(timestamp, points, hasRoundedCorners, isClosedPath) {
-//        if (points == undefined) {
-//            return;
-//        }
-//
-//        this.SceneNode = new SceneNode();
-//        this.SceneNode.setPosition(points[0], timestamp);
-//
-//        //this.Logger = log4javascript.getDefaultLogger();
-//        this.isRoundedCorner = hasRoundedCorners;
-//        this.IsClosedPath = isClosedPath;
-//        var segments = new Array();
-//        this.Joints = new Array();
-//        this.Points = _.map(points, function (value) {
-//            var childSceneNode = new SceneNode(this.SceneNode);
-//            var point = new SceneNodeTimedValue(childSceneNode);
-//            point.set(value, timestamp);
-//            return point;
-//        }.bind(this));
-//
-//        for (var i = 0; i < this.Points.length; i++) {
-//            var joint = null;
-//            var point = this.Points[i];
-//
-//            if (!isClosedPath && (i == 0 || i == (points.length - 1))) {
-//                //this.Joints.push(new ArrowEndPoint(point, 30, 15));
-//                this.Joints.push(new EndPoint(point, 30, 15));
-//            }
-//            else {
-//                if (this.isRoundedCorner) {
-//                    this.Joints.push(new ArcJoint(point, 40));
-//                }
-//                else {
-//                    this.Joints.push(new Joint(point));
-//                }
-//            }
-//        }
-//
-//        for (var i = 0; i < this.Joints.length; i++) {
-//            if (!isClosedPath && i == (this.Joints.length - 1)) {
-//                break;
-//            }
-//            segments.push(new LineSegment());
-//            //segments.push(new BezierSegment());
-//        }
-//
-//        this._linkJointsAndSegments(segments);
-        //var path = new Path(segments, isClosedPath);
-        this.IsClosedPath = false;
+var PolySegmentShape = Shape.extend({
+    init:function (t, pathJson){
         this.SceneNode = new SceneNode();
-
-        var path = this.loadFromObject(pathJson, timestamp);
-        this.SceneNode.setPosition(new Point(pathJson[0].X, pathJson[0].Y), timestamp);
-
+        this.SceneNode.setPosition(t, pathJson.Origin);
+        var path = this.loadFromObject(t, pathJson);
 
         this._super(path);
     },
-    extractJoints:function(item, timestamp){
-        var point = new Point(item.X, item.Y);
+    extractJoints:function(t, item, isEndPoint){
+        var sceneNode = new SceneNode(this.SceneNode);
+        sceneNode.translate(t, item.X, item.Y);
 
-        var childSceneNode = new SceneNode(this.SceneNode);
-        var sceneNode = new SceneNodeTimedValue(childSceneNode);
-        sceneNode.set(point, timestamp);
-        this.Points.push(sceneNode);
-
-        if (item.JointType === "arc"){
-            this.Joints.push(new ArcJoint(sceneNode, item.ArcLength));
-        }
-        else if (item.JointType === "corner"){
+        if (this.IsClosedPath || !isEndPoint){
             this.Joints.push(new Joint(sceneNode));
         }
-        else if (item.JointType === "arrowEndPoint"){
-            this.Joints.push(new ArrowEndPoint(sceneNode, item.ArrowWidth, item.ArrowHeight));
-        }
-        else if (item.JointType === "endPoint"){
+        else{
             this.Joints.push(new EndPoint(sceneNode));
         }
     },
-    extractSegments:function(item, timestamp){
+    extractSegments:function(t, item){
 
         if (item.SegmentType === "bezier"){
             var segment = new BezierSegment();
 
-            var childSceneNode = new SceneNode(this.SceneNode);
-            var sceneNode = new SceneNodeTimedValue(childSceneNode);
-            sceneNode.set(new Point(item.ControlPoint1.X, item.ControlPoint1.Y), timestamp);
+            var sceneNode = new SceneNode(this.SceneNode);
+            sceneNode.translate(t, item.ControlPoint1.X, item.ControlPoint1.Y);
 
-            var childSceneNode2 = new SceneNode(this.SceneNode);
-            var sceneNode2 = new SceneNodeTimedValue(childSceneNode2);
-            sceneNode2.set(new Point(item.ControlPoint2.X, item.ControlPoint2.Y), timestamp);
+            var sceneNode2 = new SceneNode(this.SceneNode);
+            sceneNode2.translate(t, item.ControlPoint2.X, item.ControlPoint2.Y);
 
             segment.setControlPoints(sceneNode, sceneNode2);
 
@@ -98,7 +36,7 @@ var PolyLineShape = Shape.extend({
             this.Segments.push(new LineSegment());
         }
     },
-    loadFromObject:function(object, timestamp){
+    loadFromObject:function(t, object){
         var item;
 
         var isJoint = true;
@@ -108,14 +46,19 @@ var PolyLineShape = Shape.extend({
 
         var thisObj = this;
 
-        _.each(object, function(item){
+        this.IsClosedPath = object.IsClosedPath;
+
+        var index = 0;
+        _.each(object.Items, function(item){
             if (isJoint){
-                thisObj.extractJoints(item, timestamp);
+                var isEndPoint = (index === 0 || index === (object.Items.length - 1));
+                thisObj.extractJoints(t, item, isEndPoint);
             }
             else{
-                thisObj.extractSegments(item, timestamp);
+                thisObj.extractSegments(t, item);
             }
             isJoint = !isJoint;
+            index++;
         });
 
         this._linkJointsAndSegments(this.Segments);
@@ -159,7 +102,7 @@ var PolyLineShape = Shape.extend({
         }
     },
     toString:function () {
-        return "PolyLineShape " + this._super();
+        return "PolySegmentShape " + this._super();
     }
 
 });

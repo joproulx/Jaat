@@ -14,18 +14,18 @@ var Line = Class.extend({
         this.Slope = slope;
         this.Offset = offset;
     },
-    getOffset:function (timestamp) {
+    getOffset:function (t) {
         if (isNaN(this.Offset)) {
-            var point1 = this.Point1.get(timestamp);
+            var point1 = this.Point1.get(t);
 
-            return point1.Y - this.getSlope(timestamp) * point1.X;
+            return point1.Y - this.getSlope(t) * point1.X;
         }
         return this.Offset;
     },
-    getSlope:function (timestamp) {
+    getSlope:function (t) {
         if (isNaN(this.Slope)) {
-            var point1 = this.Point1.get(timestamp);
-            var point2 = this.Point2.get(timestamp);
+            var point1 = this.Point1.get(t);
+            var point2 = this.Point2.get(t);
 
             return (point2.Y - point1.Y) /
                    (point2.X - point1.X);
@@ -33,11 +33,11 @@ var Line = Class.extend({
 
         return this.Slope;
     },
-    getPoints:function (timestamp, point, length) {
+    getPoints:function (t, point, length) {
         var points = new Array();
 
-        if (this.getSlope(timestamp) != Infinity) {
-            var angle = Math.atan(this.getSlope(timestamp));
+        if (this.getSlope(t) != Infinity) {
+            var angle = Math.atan(this.getSlope(t));
             var y = point.Y + length * Math.sin(angle);
             var x = point.X + length * Math.cos(angle);
             points.push(new Point(x, y));
@@ -57,14 +57,14 @@ var Line = Class.extend({
         }
         return points;
     },
-    getPerpendicularLine:function (timestamp, point) {
+    getPerpendicularLine:function (t, point) {
         //Number.POSITIVE_INFINITY;
 
         var slope = Infinity;
         var offset = point.X;
 
-        if (this.getSlope(timestamp) != 0) {
-            slope = -1 / this.getSlope(timestamp);
+        if (this.getSlope(t) != 0) {
+            slope = -1 / this.getSlope(t);
             offset = -1 * slope * point.X + point.Y;
         }
 
@@ -75,20 +75,20 @@ var Line = Class.extend({
 
         return new Line(null, null, slope, offset);
     },
-    getIntersectionPoint:function (timestamp, otherLine) {
+    getIntersectionPoint:function (t, otherLine) {
         var x;
         var y;
-        if (this.getSlope(timestamp) == Infinity) {
-            x = this.getOffset(timestamp);
-            y = otherLine.getSlope(timestamp) * x + otherLine.getOffset(timestamp);
+        if (this.getSlope(t) == Infinity) {
+            x = this.getOffset(t);
+            y = otherLine.getSlope(t) * x + otherLine.getOffset(t);
         }
-        else if (otherLine.getSlope(timestamp) == Infinity) {
-            x = otherLine.getOffset(timestamp);
-            y = this.getSlope(timestamp) * x + this.getOffset(timestamp);
+        else if (otherLine.getSlope(t) == Infinity) {
+            x = otherLine.getOffset(t);
+            y = this.getSlope(t) * x + this.getOffset(t);
         }
         else {
-            x = (otherLine.getOffset(timestamp) - this.getOffset(timestamp)) / (this.getSlope(timestamp) - otherLine.getSlope(timestamp));
-            y = this.getSlope(timestamp) * x + this.getOffset(timestamp);
+            x = (otherLine.getOffset(t) - this.getOffset(t)) / (this.getSlope(t) - otherLine.getSlope(t));
+            y = this.getSlope(t) * x + this.getOffset(t);
         }
         return new Point(x, y);
     }

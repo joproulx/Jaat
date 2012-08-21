@@ -1,22 +1,44 @@
 
 var PathTransition = Class.extend({
-    init: function(path, sceneNode){
+    init: function(path, startRatio, endRatio, sceneNode){
         this.SceneNode = sceneNode;
         this.Path = path;
+
+
+
+        this.StartRatio = startRatio;
+        this.EndRatio = endRatio;
+
         this.StartTimestamp = null;
         this.EndTimestamp = null;
         this.StartValue = null;
         this.EndValue = null;
     },
-    getValue: function(timestamp){
-        if (timestamp < this.StartTimestamp || timestamp > this.EndTimestamp){
-            throw "Invalid timestamp";
+    getValue: function(t){
+        if (t < this.StartTimestamp || t > this.EndTimestamp){
+            throw "PathTransition.getValue: Invalid t";
         }
 
-        var ratio = (timestamp - this.StartTimestamp) / (this.EndTimestamp - this.StartTimestamp);
+        var ratio = (t - this.StartTimestamp) / (this.EndTimestamp - this.StartTimestamp);
+        var isZeroRatio = (ratio === 0);
+        ratio = ((this.EndRatio - this.StartRatio) * ratio + this.StartRatio) % 1;
 
-        var point = this.Path.getPointFromRatio(timestamp, ratio);
+        if (ratio === 0 && !isZeroRatio){
+            ratio = 1;
+        }
 
-        return getTransformationFromPoint(this.SceneNode.getParentTransformationMatrix(timestamp), point.X, point.Y);
+        var point = this.Path.getPointFromRatio(t, ratio);
+
+        var matrix = getTransformationFromPoint(this.SceneNode.getParentTransformationMatrix(t), point.X, point.Y);
+
+        var radians = this.Path.getTangentAngleFromRatio(t, ratio);
+        var cosRadians = Math.cos(radians);
+        var sinRadians = Math.sin(radians);
+
+        return $M([
+            [cosRadians, -sinRadians, matrix.e(1, 3)],
+            [sinRadians, cosRadians, matrix.e(2, 3)],
+            [0, 0, 1]
+        ]);
     }
 });

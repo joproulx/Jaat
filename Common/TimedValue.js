@@ -4,28 +4,27 @@ var TimedValue = Class.extend({
         this.Cached = new CachedTimedValue();
         this.m_defaultTransitionFactory = defaultTransitionFactory;
     },
-    get:function (timestamp) {
-//        var value = this.Cached.get(timestamp);
+    get:function (t) {
+//        var value = this.Cached.get(t);
 //        if (value != undefined){
 //            return value;
 //        }
 
         var previous = null;
-        var previousTimestamp = -1;
         var actualValue = null;
         var nextTimestamp = -1;
 
         _.find(this.Values, function (value, index) {
-            if (index == timestamp) {
+            if (index == t) {
                 actualValue = value.Value;
                 return true;
             }
-            if (index > timestamp) {
+            if (index > t) {
                 nextTimestamp = index;
                 return true;
             }
+
             previous = value;
-            previousTimestamp = index;
 
             return false;
         }, this);
@@ -38,18 +37,23 @@ var TimedValue = Class.extend({
             //this.Cached.set(previousTimestamp, nextTimestamp, previous.Value, previous.Transition);
 
             if (previous.Transition != null) {
-                return previous.Transition.getValue(timestamp);
+
+                if (t > previous.Transition.EndTimestamp){
+                    t = previous.Transition.EndTimestamp;
+                }
+
+                return previous.Transition.getValue(t);
             }
             return previous.Value;
         }
 
         return null;
     },
-    set:function (value, timestamp, transition) {
+    set:function (t, value, transition) {
         //this.Cached.invalidate();
 
-        if (timestamp === undefined) {
-            timestamp = 0;
+        if (t === undefined) {
+            t = 0;
         }
 
         if (transition === undefined && this.m_defaultTransitionFactory !== undefined) {
@@ -63,11 +67,11 @@ var TimedValue = Class.extend({
             var previousValue = null;
             var previousTimestamp = null;
             _.find(this.Values, function (value, index) {
-                if (index == timestamp) {
+                if (index == t) {
                     currentTransition = value.Transition;
                     return true;
                 }
-                if (index > timestamp) {
+                if (index > t) {
                     currentTransition = previousValue.Transition;
                     return true;
                 }
@@ -79,18 +83,25 @@ var TimedValue = Class.extend({
             if (previousValue != null) {
                 previousValue.Transition = transition;
                 transition.StartTimestamp = previousTimestamp;
-                transition.EndTimestamp = timestamp;
+                transition.EndTimestamp = t;
                 transition.StartValue = previousValue.Value;
+
+                if (value === undefined){
+                    value = transition.getValue(t);
+                }
                 transition.EndValue = value;
             }
         }
 
         if (currentTransition != null) {
-            currentTransition.StartTimestamp = timestamp;
+            currentTransition.StartTimestamp = t;
+            if (value === undefined){
+                value = transition.getValue(t);
+            }
+
             currentTransition.StartValue = value;
         }
 
-        this.Values[timestamp] = { Value:value, Transition:currentTransition };
-
+        this.Values[t] = { Value:value, Transition:currentTransition };
     }
 });

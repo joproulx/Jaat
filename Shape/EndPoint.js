@@ -2,7 +2,7 @@ var EndPoint = Joint.extend({
     init:function (point) {
         this._super(point);
     },
-    createDrawnSegment:function () {
+    createSegmentRenderer:function () {
         return null;
     },
     isStartEndPoint:function () {

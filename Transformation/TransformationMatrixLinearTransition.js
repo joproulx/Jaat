@@ -6,12 +6,12 @@ var TransformationMatrixLinearTransition = Class.extend({
         this.StartValue = null;
         this.EndValue = null;
     },
-    getValue: function(timestamp){
-        if (timestamp < this.StartTimestamp || timestamp > this.EndTimestamp){
-            throw "Invalid timestamp";
+    getValue: function(t){
+        if (t < this.StartTimestamp || t > this.EndTimestamp){
+            throw "Invalid t";
         }
 
-        var ratio = (timestamp - this.StartTimestamp) / (this.EndTimestamp - this.StartTimestamp);
+        var ratio = (t - this.StartTimestamp) / (this.EndTimestamp - this.StartTimestamp);
 
         var startRadians = getRotationRadian(this.StartValue);
         var endRadians = getRotationRadian(this.EndValue);

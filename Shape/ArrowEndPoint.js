@@ -8,8 +8,8 @@ var ArrowEndPoint = EndPoint.extend({
         this.ArrowLength = arrowLength;
         this.ArrowWidth = arrowWidth;
     },
-    createDrawnSegment:function () {
-        return new ArrowDrawnSegment(this);
+    createSegmentRenderer:function () {
+        return new ArrowSegmentRenderer(this);
     }
 });
 

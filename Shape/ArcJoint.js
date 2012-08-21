@@ -14,7 +14,7 @@ var ArcJoint = Joint.extend({
         this._super(point);
         this.CornerLength = cornerLength;
     },
-    createDrawnSegment:function () {
-        return new ArcDrawnSegment(this, true);
+    createSegmentRenderer:function () {
+        return new ArcSegmentRenderer(this, true);
     }
 });

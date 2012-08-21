@@ -17,17 +17,17 @@ function TimeLineControl(timeLineController)
             ev.clientY >= thisObj.m_canvas.height - 14 && ev.clientY < thisObj.m_canvas.height)
         {
             var percent = ev.clientX / thisObj.m_canvas.width;
-            var timestamp = percent * (thisObj.m_timeLineController.EndTimestamp - thisObj.m_timeLineController.StartTimestamp) + thisObj.m_timeLineController.StartTimestamp;
-            timeLineController.seek(timestamp);
+            var t = percent * (thisObj.m_timeLineController.EndTimestamp - thisObj.m_timeLineController.StartTimestamp) + thisObj.m_timeLineController.StartTimestamp;
+            timeLineController.seek(t);
         }
     }, false);
 
     var thisObj = this;
 
 
-    this.onRender = function TimeLineControl_onRender(timestamp)
+    this.onRender = function TimeLineControl_onRender(t)
     {
-        var ratio = (timestamp - thisObj.m_timeLineController.StartTimestamp)/(thisObj.m_timeLineController.EndTimestamp - thisObj.m_timeLineController.StartTimestamp);
+        var ratio = (t - thisObj.m_timeLineController.StartTimestamp)/(thisObj.m_timeLineController.EndTimestamp - thisObj.m_timeLineController.StartTimestamp);
 
         var posX = (ratio * thisObj.m_canvas.width);
 

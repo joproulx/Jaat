@@ -43,6 +43,9 @@ function Point(x, y) {
     this.multiplyBy = function (value) {
         return new Point(this.X * value, this.Y * value);
     }
+    this.x = function (value) {
+        return this.multiplyBy(value);
+    }
     this.add = function (point) {
         return new Point(this.X + point.X, this.Y + point.Y);
     }

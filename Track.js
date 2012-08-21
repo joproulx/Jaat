@@ -12,32 +12,32 @@ function Track()
 //        this.m_transitions.push(transition);
 //    }
 
-    this.render = function(context, timestamp)
+    this.render = function(t, context)
     {
         // Todo: improve performance by avoiding getting always the last keyframe
-        var keyFrame = this.getPreviousKeyFrame(timestamp);
+        var keyFrame = this.getPreviousKeyFrame(t);
 
         if (keyFrame != null)
         {
             if (keyFrame.Transition != null)
             {
-                keyFrame.Transition.render(context, timestamp);
+                keyFrame.Transition.render(t, context);
             }
             else
             {
-                keyFrame.render(context, timestamp);
+                keyFrame.render(t, context);
             }
         }
     }
 
-    this.getPreviousKeyFrame = function(timestamp)
+    this.getPreviousKeyFrame = function(t)
     {
         var result = null;
 
         for(var i = 0; i < this.m_keyFrames.length; i++)
         {
             var keyFrame = this.m_keyFrames[i];
-            if (keyFrame.Timestamp <= timestamp)
+            if (keyFrame.Timestamp <= t)
             {
                 result = keyFrame;
             }
@@ -49,7 +49,7 @@ function Track()
         return result;
     }
 
-    this.getNextKeyFrame = function(timestamp)
+    this.getNextKeyFrame = function(t)
     {
         var result = null;
 
@@ -57,7 +57,7 @@ function Track()
         {
             var keyFrame = this.m_keyFrames[i];
 
-            if (keyFrame.Timestamp > timestamp)
+            if (keyFrame.Timestamp > t)
             {
                 result = keyFrame;
                 break;
@@ -83,19 +83,19 @@ function Track()
     }
 
 
-    this.addNewKeyFrame = function(timestamp)
+    this.addNewKeyFrame = function(t)
     {
         var keyFrame;
-        var previousKeyFrame = this.getPreviousKeyFrame(timestamp);
+        var previousKeyFrame = this.getPreviousKeyFrame(t);
 
         if (previousKeyFrame)
         {
             keyFrame = previousKeyFrame.clone();
-            keyFrame.Timestamp = timestamp;
+            keyFrame.Timestamp = t;
         }
         else
         {
-            keyFrame = new KeyFrame(timestamp);
+            keyFrame = new KeyFrame(t);
         }
 
         this.m_keyFrames.push(keyFrame);

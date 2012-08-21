@@ -6,12 +6,12 @@ var ColorLinearTransition = Class.extend({
         this.StartValue = null;
         this.EndValue = null;
     },
-    getValue: function(timestamp){
-        if (timestamp < this.StartTimestamp || timestamp > this.EndTimestamp){
+    getValue: function(t){
+        if (t < this.StartTimestamp || t > this.EndTimestamp){
             throw "Invalid timestamp";
         }
 
-        var ratio = (timestamp - this.StartTimestamp) / (this.EndTimestamp - this.StartTimestamp);
+        var ratio = (t - this.StartTimestamp) / (this.EndTimestamp - this.StartTimestamp);
 
         var r = this.getColorFromRatio(ratio, this.StartValue.R, this.EndValue.R);
         var g = this.getColorFromRatio(ratio, this.StartValue.G, this.EndValue.G);

@@ -14,10 +14,10 @@ var CachedTimedValue = Class.extend({
         this.End = end;
         this.Transition = transition;
     },
-    get:function(timestamp){
-        if (timestamp >= this.Start && (timestamp <= this.End || this.End == -1)){
+    get:function(t){
+        if (t >= this.Start && (t <= this.End || this.End == -1)){
             if (this.Transition != null){
-                return this.Transition.get(timestamp);
+                return this.Transition.get(t);
             }
             return this.Value;
         }

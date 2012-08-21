@@ -3,22 +3,21 @@ var Shape = Class.extend(
         init:function (path) {
             this.Id = generateGuid();
             this.Path = null;
-            this.DrawnShape = null;
+            this.ShapeRenderer = null;
             this.Path = path;
-            this.StrokeColor = new TimedValue(function() { return new ColorLinearTransition(); });
-            this.StrokeColor.set({R:0, G:0, B:0});
-            this.StrokeOpacity = new TimedValue(function() { return new LinearTransition(); });
-            this.StrokeOpacity.set(1);
+            this.StrokeColor = new LinearTimedValue({R:0, G:0, B:0});
+            this.StrokeOpacity = new LinearTimedValue(1);
+            this.StrokeRatio = { Start: new LinearTimedValue(0), End: new LinearTimedValue(1) }
         },
-        createDrawnShape:function () {
-            return new DrawnShape(this);
+        createShapeRenderer:function () {
+            return new ShapeRenderer(this);
         },
-        render:function (context, timestamp) {
-            if (this.DrawnShape == null) {
-                this.DrawnShape = this.createDrawnShape();
+        render:function (t, context) {
+            if (this.ShapeRenderer == null) {
+                this.ShapeRenderer = this.createShapeRenderer();
             }
 
-            this.DrawnShape.render(context, timestamp);
+            this.ShapeRenderer.render(t, context);
         },
         toString:function () {
             return "{ID:" + this.Id + "\r\n" + this.Path.toString() + "}";
