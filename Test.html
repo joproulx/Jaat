@@ -5,7 +5,34 @@
     <!--<button type="button" onclick="">Click Me!</button>-->
 </head>
 <body>
-<canvas width="800" height="450"></canvas>
+<div id="canvasesdiv" style="position:relative; width:800px; height:450px">
+    <canvas id="layer1"
+            style="z-index: 1;
+position:absolute;
+left:0px;
+top:0px;
+" height="450px" width="800">
+        This text is displayed if your browser does not support HTML5 Canvas.
+    </canvas>
+    <canvas id="layer2"
+            style="z-index: 2;
+position:absolute;
+left:0px;
+top:0px;
+" height="450px" width="800">
+        This text is displayed if your browser does not support HTML5 Canvas.
+    </canvas>
+    <canvas id="layer3"
+            style="z-index: 3;
+position:absolute;
+left:0px;
+top:0px;
+" height="450px" width="800">
+        This text is displayed if your browser does not support HTML5 Canvas.
+    </canvas>
+</div>
+
+<!--<canvas width="800" height="450"></canvas>-->
 <!--<script src="http://documentcloud.github.com/backbone/backbone.js"></script>-->
 <script type="text/javascript" src="Library/Underscore/Underscore.js"></script>
 <script type="text/javascript" src="Library/log4javascript/log4javascript_uncompressed.js"></script>
@@ -52,7 +79,8 @@
 <script src="Shape/TextShape.js"></script>
 
 <script src="Transformation/LinearTransition.js"></script>
-<script src="Transformation/PathTransition.js"></script>
+<script src="Transformation/FollowPathTransition.js"></script>
+<script src="Transformation/FollowDirectionTransition.js"></script>
 <script src="Transformation/PointLinearTransition.js"></script>
 <script src="Transformation/ColorLinearTransition.js"></script>
 <script src="Transformation/TransformationMatrixLinearTransition.js"></script>
@@ -69,8 +97,10 @@
 <script src="Track.js"></script>
 <script src="Transition.js"></script>
 <script type="text/javascript">
-    var context = document.getElementsByTagName('canvas')[0].getContext('2d');
-    var canvas = document.getElementsByTagName('canvas')[0];
+var context = document.getElementsByTagName('canvas')[1].getContext('2d');
+var contextBackground = document.getElementsByTagName('canvas')[0].getContext('2d');
+var canvasBackground = document.getElementsByTagName('canvas')[0];
+var canvas = document.getElementsByTagName('canvas')[1];
 
 //    try
 //    {
@@ -107,31 +137,45 @@
 //        ]
 //    };
 
-    var path2 = {
-        IsClosedPath: false,
-        Origin: {X: 100, Y: 200},
-        Items: [
-            { X:0, Y:0, JointType:"endPoint" },
-            { SegmentType:"bezier", ControlPoint1: { X:0, Y:-100 }, ControlPoint2: { X:100, Y:-100 } },
-            { X:100, Y:0, JointType:"endPoint" }
-        ]
-    };
+var path2 = {
+    IsClosedPath:false,
+    Origin:{X:100, Y:100},
+    Items:[
+//        { X:0, Y:0 },
+//        { SegmentType:"bezier", ControlPoint1:{ X:0, Y:-100 }, ControlPoint2:{ X:100, Y:-100 } },
+//        { X:100, Y:0 },
+//        { SegmentType:"bezier", ControlPoint1:{ X:100, Y:100 }, ControlPoint2:{ X:200, Y:100 } },
+        { X:0, Y:0 },
+        { SegmentType:"line"},
+        { X:100, Y:0 },
+        { SegmentType:"line"},
+        { X:100, Y:100 }
+    ]
+};
 
-    var polyLine = new PolySegmentShape(0, path2);
-//    polyLine.StrokeRatio.Start.set(0.5, 0);
-//    polyLine.StrokeRatio.Start.set(0, 5000);
-//    polyLine.StrokeRatio.End.set(0.5, 0);
-//    polyLine.StrokeRatio.End.set(1, 5000);
-    polyLine.render(0, context);
+var polyLine = new PolySegmentShape(0, path2);
+//polyLine.StrokeDashPattern = [0.1, 0.1];
+polyLine.StrokeDashOffset.set(0, 0);
+polyLine.StrokeDashOffset.set(10000, 1000);
 
-    var arrow = new ArrowShape(0);
-    arrow.SceneNode.setPosition(0, new Point(100, 100));
-   // arrow.SceneNode.setPath(polyLine.Path, 0, 1,  10000);
-    arrow.SceneNode.translate(15000, 100, 100);
+polyLine.StrokeRatio.End.set(0,0);
+polyLine.StrokeRatio.End.set(10000, 1);
+polyLine.StrokeColor.set(0, {R:120, G:120, B:120});
+polyLine.render(0, context);
 
-    arrow.render(0, context);
-    //arrow.SceneNode.setPath(polyLine.Path, 10000);
+var arrow = new ArrowShape(0);
+arrow.SceneNode.setPosition(0, new Point(100, 100));
+arrow.SceneNode.followPath(10000, polyLine.Path, 0, 1);
+//arrow.SceneNode.translate(15000, 100, 100);
 
+
+var arrow2 = new ArrowShape(0);
+arrow2.SceneNode.setPosition(0, new Point(100, 300));
+arrow2.SceneNode.followPathOrientation(10000, polyLine.Path, 0, 1);
+arrow2.render(0, context);
+
+
+//arrow.SceneNode.setPath(polyLine.Path, 10000);
 
 
 //        t0 = 0;
@@ -169,7 +213,7 @@
 //        }
 
 
-       // var newPoints = getSegment(points[0], point1, point2, points[1], t0, t1);
+// var newPoints = getSegment(points[0], point1, point2, points[1], t0, t1);
 
 //        xa = points[0].X;
 //        ya = points[0].Y;
@@ -181,7 +225,6 @@
 //        yd = points[1].Y;
 
 
-
 //        var path =
 //                        [{ X:newPoints[0].X, Y:newPoints[0].Y, JointType:"endPoint" },
 //                            { SegmentType:"bezier", ControlPoint1:{X:newPoints[1].X, Y:newPoints[1].Y}, ControlPoint2:{X:newPoints[2].X, Y:newPoints[2].Y} },
@@ -189,12 +232,11 @@
 //                ;
 
 
-
-        //var points1 = [new Point(200, 100), new Point(300, 200)];
+//var points1 = [new Point(200, 100), new Point(300, 200)];
 
 
 //        var points = [new Point(200, 200), new Point(200, 100)];
-        //var poly2 = new PolyLineShape(path, 0);
+//var poly2 = new PolyLineShape(path, 0);
 
 
 //        var bezier = new PolyLineShape(0, points, false, false);
@@ -213,12 +255,12 @@
 //
 //        bezier.Path.Segments[0].setControlPoints(point1, point2);
 //
-        //poly2.SceneNode.setPosition(new Point(200, 100), 0);
-        //poly2.SceneNode.setPath(polyLine.Path, 5000);
+//poly2.SceneNode.setPosition(new Point(200, 100), 0);
+//poly2.SceneNode.setPath(polyLine.Path, 5000);
 
-        //poly2.render(context, 0);
+//poly2.render(context, 0);
 
-        //var pointx = bezier.Path.Segments[0].pointFromRatio(0, 0.5);
+//var pointx = bezier.Path.Segments[0].pointFromRatio(0, 0.5);
 
 //        t0 = 0;
 //        t1 = 0.5;
@@ -309,85 +351,101 @@
 //        alert(ex);
 //    }
 
-    /*
-      var rectangle = new RectangleShape(0, 150, 25, 150, 100);
-      rectangle.render(context, 0);
+/*
+ var rectangle = new RectangleShape(0, 150, 25, 150, 100);
+ rectangle.render(context, 0);
 
-      var roundedRectangle = new RoundedRectangleShape(0, 150, 150, 100, 100, 10);
-      roundedRectangle.render(context, 0);
-    */
-    var points = [new Point(0, 100), new Point(100, 100), new Point(100, 300), new Point(300, 300)];//, new Point(100, 200)];//, new Point(10, 300), new Point(30, 330), new Point(100, 200)];
+ var roundedRectangle = new RoundedRectangleShape(0, 150, 150, 100, 100, 10);
+ roundedRectangle.render(context, 0);
+ */
+var points = [new Point(0, 100), new Point(100, 100), new Point(100, 300), new Point(300, 300)];//, new Point(100, 200)];//, new Point(10, 300), new Point(30, 330), new Point(100, 200)];
 
-    //var points = [new Point(0, 100), new Point(100, 100), new Point(200, 100)];
+//var points = [new Point(0, 100), new Point(100, 100), new Point(200, 100)];
 
-   /* var polyLine = new PolyLineShape(0, points, false, false);
+/* var polyLine = new PolyLineShape(0, points, false, false);
 
-    //polyLine.Points[0].set(new Point(0, 200), 10000, new PointLinearTransition());
-    polyLine.Points[2].set(new Point(200, 200), 10000, new PointLinearTransition());
-
-
-    polyLine.SceneNode.setPosition(new Point(200, 100), 0);
-
-    polyLine.SceneNode.rotate(Math.PI*-2, 10000);
-
-    polyLine.SceneNode.setPosition(new Point(400, 100), 5000);
+ //polyLine.Points[0].set(new Point(0, 200), 10000, new PointLinearTransition());
+ polyLine.Points[2].set(new Point(200, 200), 10000, new PointLinearTransition());
 
 
-    //polyLine.SceneNode.rotate(Math.PI/4, 5000);
+ polyLine.SceneNode.setPosition(new Point(200, 100), 0);
 
-    polyLine.StrokeColor.set({R:255,G:255,B:0}, 5000);
-    polyLine.StrokeColor.set({R:0,G:0,B:255}, 10000);
-    //polyLine.StrokeOpacity.set(0, 10000);
-    //log4javascript.getDefaultLogger().info(polyLine.toString());
+ polyLine.SceneNode.rotate(Math.PI*-2, 10000);
 
-    polyLine.render(context, 15);
-*/
+ polyLine.SceneNode.setPosition(new Point(400, 100), 5000);
+
+
+ //polyLine.SceneNode.rotate(Math.PI/4, 5000);
+
+ polyLine.StrokeColor.set({R:255,G:255,B:0}, 5000);
+ polyLine.StrokeColor.set({R:0,G:0,B:255}, 10000);
+ //polyLine.StrokeOpacity.set(0, 10000);
+ //log4javascript.getDefaultLogger().info(polyLine.toString());
+
+ polyLine.render(context, 15);
+ */
 //    var text = new TextShape("127.0.0.1", 0, 50);
 //    text.render(context);
 
-    function drawGrid(){
-        for(var i  = 0; i < canvas.height; i+=50){
-
-            context.save();
-            context.strokeStyle = "gray";
-            context.lineWidth = 0.5;
-            context.moveTo(0,i);
-            context.lineTo(canvas.width,i);
-            context.stroke();
-            context.restore();
-        }
-
-        for(var i  = 0; i < canvas.width; i+=50){
-            context.save();
-            context.strokeStyle = "gray";
-            context.lineWidth = 0.5;
-            context.moveTo(i,0);
-            context.lineTo(i,canvas.height);
-            context.stroke();
-            context.restore();
-
-        }
-
-
-    }
-
-    function onBeforeRendered(from, t, context)
-    {
-        //Clear Canvas
-        context.clearRect(0,0,canvas.width,canvas.height);
-
-        //(timestamp / 10000)
-       drawGrid();
-
-    }
-    var sceneManager = new SceneManager(0, 20000, context);
-
-    var timeLineControl = new TimeLineControl(sceneManager.TimeLineController);
-
-    sceneManager.TimeLineController.BeforeRenderEvent.subscribe(onBeforeRendered, this);
-    sceneManager.addToScene(polyLine);
-    sceneManager.addToScene(arrow);
+var m_drawGrid = true;
+function onClickDisplayGrid() {
+    m_drawGrid = !m_drawGrid;
     drawGrid();
+}
+
+
+function drawGrid() {
+    contextBackground.clearRect(0, 0, 800, 450);
+
+    contextBackground.fillStyle = "#FAF7F8";
+    contextBackground.beginPath();
+    contextBackground.rect(0, 0, 800, 450);
+    contextBackground.closePath();
+    contextBackground.fill();
+
+    if (m_drawGrid) {
+        for (var i = 0; i < canvas.height; i += 50) {
+
+            contextBackground.save();
+            contextBackground.strokeStyle = "gray";
+            contextBackground.lineWidth = 1;
+            contextBackground.moveTo(0.5, i + 0.5);
+            contextBackground.lineTo(canvas.width + 0.5, i + 0.5);
+            contextBackground.stroke();
+            contextBackground.restore();
+        }
+
+        for (var i = 0; i < canvas.width; i += 50) {
+            contextBackground.save();
+            contextBackground.strokeStyle = "gray";
+            contextBackground.lineWidth = 1;
+            contextBackground.moveTo(i + 0.5, 0.5);
+            contextBackground.lineTo(i + 0.5, canvas.height + 0.5);
+            contextBackground.stroke();
+            contextBackground.restore();
+
+        }
+    }
+
+}
+
+function onBeforeRendered(from, t, context) {
+    //Clear Canvas
+    context.clearRect(0, 0, canvas.width, canvas.height);
+
+    //(timestamp / 10000)
+
+
+}
+var sceneManager = new SceneManager(0, 20000, context);
+
+var timeLineControl = new TimeLineControl(sceneManager.TimeLineController);
+
+sceneManager.TimeLineController.BeforeRenderEvent.subscribe(onBeforeRendered, this);
+sceneManager.addToScene(polyLine);
+sceneManager.addToScene(arrow);
+sceneManager.addToScene(arrow2);
+drawGrid();
 
 //
 //    var track = new Track();
@@ -408,22 +466,19 @@
 //    timeLine.RootSceneGroup.addToScene("test", track);
 //    track.generateTransitions();
 //
-    function onClick()
-    {
-        if (sceneManager.TimeLineController.IsStarted)
-        {
-            sceneManager.TimeLineController.stop();
-        }
-        else
-        {
-            sceneManager.TimeLineController.start( sceneManager.TimeLineController.CurrentTime);
-        }
+function onClickPlay() {
+    if (sceneManager.TimeLineController.IsStarted) {
+        sceneManager.TimeLineController.stop();
     }
-
+    else {
+        sceneManager.TimeLineController.start(sceneManager.TimeLineController.CurrentTime);
+    }
+}
 
 
 </script>
 
-<button type="button" onclick="onClick()">Click Me!</button>
+<button type="button" onclick="onClickPlay()">Play</button>
+<button type="button" onclick="onClickDisplayGrid()">Display/Hide grid</button>
 </body>
 </html>

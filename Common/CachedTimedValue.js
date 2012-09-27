@@ -13,11 +13,16 @@ var CachedTimedValue = Class.extend({
         this.Start = start;
         this.End = end;
         this.Transition = transition;
+        this.Value = value;
     },
     get:function(t){
+        if (this.Start === -1 && this.End === -1){
+            return undefined;
+        }
+
         if (t >= this.Start && (t <= this.End || this.End == -1)){
-            if (this.Transition != null){
-                return this.Transition.get(t);
+            if (this.Transition !== null){
+                return this.Transition.getValue(t);
             }
             return this.Value;
         }

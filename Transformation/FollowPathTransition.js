@@ -1,5 +1,5 @@
 
-var PathTransition = Class.extend({
+var FollowPathTransition = Class.extend({
     init: function(path, startRatio, endRatio, sceneNode){
         this.SceneNode = sceneNode;
         this.Path = path;
@@ -16,7 +16,7 @@ var PathTransition = Class.extend({
     },
     getValue: function(t){
         if (t < this.StartTimestamp || t > this.EndTimestamp){
-            throw "PathTransition.getValue: Invalid t";
+            throw "FollowPathTransition.getValue: Invalid t";
         }
 
         var ratio = (t - this.StartTimestamp) / (this.EndTimestamp - this.StartTimestamp);
@@ -30,6 +30,10 @@ var PathTransition = Class.extend({
         var point = this.Path.getPointFromRatio(t, ratio);
 
         var matrix = getTransformationFromPoint(this.SceneNode.getParentTransformationMatrix(t), point.X, point.Y);
+
+        return new Point(getTranslationX(matrix), getTranslationY(matrix));
+
+
 
         var radians = this.Path.getTangentAngleFromRatio(t, ratio);
         var cosRadians = Math.cos(radians);

@@ -8,6 +8,7 @@ var Shape = Class.extend(
             this.StrokeColor = new LinearTimedValue({R:0, G:0, B:0});
             this.StrokeOpacity = new LinearTimedValue(1);
             this.StrokeRatio = { Start: new LinearTimedValue(0), End: new LinearTimedValue(1) }
+            this.StrokeDashOffset = new LinearTimedValue(0);
         },
         createShapeRenderer:function () {
             return new ShapeRenderer(this);

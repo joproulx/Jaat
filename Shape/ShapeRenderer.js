@@ -59,6 +59,29 @@ var ShapeRenderer = Class.extend(
                 segment = segment.Joint2.Segment2;
             }
         },
+        getRatio:function(length, totalLength){
+            return length / totalLength;
+        },
+        getDashedSegment:function(t, dashedOffset, length){
+            var value = 30;
+
+            if (t > 0){
+                var jo = 1;
+            }
+
+            length = this.Shape.StrokeDashOffset.get(t) + length;
+
+            var modulo = (length) % value;
+
+            var length2 = Math.floor(length / value);
+
+            if ((length%(value*2)) >= (value)){
+                return {Drawn:false, Length:length2*value + value - length};
+            }
+            else{
+                return {Drawn:true, Length:length2*value + value - length};
+            }
+        },
         render:function (t, context) {
             var startRatio = this.Shape.StrokeRatio.Start.get(t);
             var endRatio = this.Shape.StrokeRatio.End.get(t);
@@ -68,38 +91,86 @@ var ShapeRenderer = Class.extend(
             var startLength = length * startRatio;
             var endLength = length * endRatio;
 
-            var currentLength = 0;
+            var currentTotalLength = startLength;
+            var totalSegmentLength = 0;
+
+            var beginPath = true;
+            var endPath = true;
 
             for (var i = 0; i < this.SegmentRenderers.length; i++) {
                 var segmentLength = this.SegmentRenderers[i].Segment.length(t);
 
-                var startRatioSegment = 0;
-                var endRatioSegment = 1;
+                var reachedEnd = false;
+                do{
 
-                if (currentLength < startLength) {
-                    if (currentLength + segmentLength >= startLength) {
-                        startRatioSegment = (startLength - currentLength) / segmentLength;
+                    var dashedSegment = this.getDashedSegment(t, 0, currentTotalLength);
+                    var endLength = dashedSegment.Length;
+
+                    if ((currentTotalLength + endLength) >= (totalSegmentLength + segmentLength)){
+                        endPath = ((currentTotalLength + endLength) <= (totalSegmentLength + segmentLength));
+
+                        endLength = (totalSegmentLength + segmentLength) - currentTotalLength;
+                        reachedEnd = true;
                     }
-                    else {
-                        startRatioSegment = -1;
+                    else
+                    {
+                        endPath = true;
                     }
-                }
 
-                if (currentLength < endLength) {
-                    if (currentLength + segmentLength >= endLength) {
-                        endRatioSegment = (endLength - currentLength) / segmentLength;
+                    if (dashedSegment.Drawn){
+
+                        var startRatio = this.getRatio((currentTotalLength - totalSegmentLength), segmentLength);
+                        var endRatio = this.getRatio((currentTotalLength - totalSegmentLength) + endLength, segmentLength);
+
+                        var point = this.SegmentRenderers[i].getPoint1(t, startRatio, endRatio);
+
+                        if (beginPath){
+                            this.beginRender(t, context);
+                            context.moveTo(point.X, point.Y);
+                        }
+                        this.SegmentRenderers[i].render(t, context, startRatio, endRatio);
+
+                        if (endPath){
+                            this.endRender(context);
+                        }
                     }
-                }
-                else {
-                    endRatioSegment = -1;
-                }
 
-                currentLength += segmentLength;
+                    beginPath = endPath;
+                    currentTotalLength += endLength;
 
-                if (startRatioSegment != -1 && endRatioSegment != -1) {
-                    this.renderSegment(t, context, this.SegmentRenderers[i], startRatioSegment, endRatioSegment);
-                }
+                } while(!reachedEnd);
+                totalSegmentLength += segmentLength;
             }
+
+
+
+
+//                var startRatioSegment = 0;
+//                var endRatioSegment = 1;
+//
+//                if (currentLength < startLength) {
+//                    if (currentLength + segmentLength >= startLength) {
+//                        startRatioSegment = (startLength - currentLength) / segmentLength;
+//                    }
+//                    else {
+//                        startRatioSegment = -1;
+//                    }
+//                }
+//
+//                if (currentLength < endLength) {
+//                    if (currentLength + segmentLength >= endLength) {
+//                        endRatioSegment = (endLength - currentLength) / segmentLength;
+//                    }
+//                }
+//                else {
+//                    endRatioSegment = -1;
+//                }
+//
+//                currentLength += segmentLength;
+//
+//                if (startRatioSegment != -1 && endRatioSegment != -1) {
+//                    this.renderSegment(t, context, this.SegmentRenderers[i], startRatioSegment, endRatioSegment);
+//                }
         },
         renderSegment:function (t, context, segmentRenderer, startRatio, endRatio) {
             // TODO: When a shape is closed and some of its segments are not full (ex.: dash), we need
@@ -112,22 +183,22 @@ var ShapeRenderer = Class.extend(
                 startRatio > 0) {
 
                 this.beginRender(t, context);
-                var point = segmentRenderer.Segment.pointFromRatio(t, startRatio);
+                var point = segmentRenderer.getPoint1(t, startRatio, endRatio);
                 context.moveTo(point.X, point.Y);
             }
 
-            segmentRenderer.render(t, context, endRatio);
+            segmentRenderer.render(t, context, startRatio, endRatio);
 
             if (segmentRenderer === _.last(this.SegmentRenderers) ||
                 segmentRenderer.IsIndependantShape ||
-                segmentRenderer.EndRatio < 1) {
+                endRatio < 1) {
 
                 this.endRender(context);
             }
         },
         beginRender:function (t, context) {
-            var strokeStyle = '#AAAAAA';
-            var lineWidth = 10;
+            var strokeStyle = '#696969';
+            var lineWidth = 5;
             context.save();
             context.beginPath();
             context.fillStyle = strokeStyle;
@@ -150,3 +221,5 @@ var ShapeRenderer = Class.extend(
             return this.Shape.Path.Segments[this.Shape.Path.Segments.length - 1] == segment;
         }
     });
+
+

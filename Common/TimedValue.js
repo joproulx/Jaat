@@ -5,14 +5,15 @@ var TimedValue = Class.extend({
         this.m_defaultTransitionFactory = defaultTransitionFactory;
     },
     get:function (t) {
-//        var value = this.Cached.get(t);
-//        if (value != undefined){
-//            return value;
-//        }
+        var value = this.Cached.get(t);
+        if (value !== undefined){
+            return value;
+        }
 
         var previous = null;
         var actualValue = null;
         var nextTimestamp = -1;
+        var currentTimestamp = 0;
 
         _.find(this.Values, function (value, index) {
             if (index == t) {
@@ -24,20 +25,21 @@ var TimedValue = Class.extend({
                 return true;
             }
 
+            currentTimestamp = index;
             previous = value;
 
             return false;
         }, this);
 
         if (actualValue != null) {
+            this.Cached.set(currentTimestamp, currentTimestamp, actualValue, null);
             return actualValue;
         }
 
         if (previous != null) {
-            //this.Cached.set(previousTimestamp, nextTimestamp, previous.Value, previous.Transition);
+            this.Cached.set(currentTimestamp, nextTimestamp, previous.Value, previous.Transition);
 
             if (previous.Transition != null) {
-
                 if (t > previous.Transition.EndTimestamp){
                     t = previous.Transition.EndTimestamp;
                 }
@@ -50,7 +52,7 @@ var TimedValue = Class.extend({
         return null;
     },
     set:function (t, value, transition) {
-        //this.Cached.invalidate();
+        this.Cached.invalidate();
 
         if (t === undefined) {
             t = 0;
