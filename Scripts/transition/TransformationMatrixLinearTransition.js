@@ -5,7 +5,7 @@ define([
     function (Ctor, Transition, TransformationMatrixHelper) {
         var TransformationMatrixLinearTransition = Ctor(Transition, function (_super) {
             this.init = function () {
-                _super.init();
+                _super.init.call(this);
             };
             this.getValue = function (t) {
                 if (t < this.StartTimestamp || t > this.EndTimestamp) {

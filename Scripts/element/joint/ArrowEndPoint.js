@@ -8,7 +8,7 @@ define([
                 if (arrowLength == Infinity || arrowWidth == Infinity) {
                     alert("You must provide arrow width and arrow length");
                 }
-                _super.init(point);
+                _super.init.call(this, point);
                 this.ArrowLength = arrowLength;
                 this.ArrowWidth = arrowWidth;
             };

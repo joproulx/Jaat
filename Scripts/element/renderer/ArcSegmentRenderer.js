@@ -5,7 +5,7 @@ define([
     function (Ctor, Vector, SegmentRenderer) {
         var ArcSegmentRenderer = Ctor(SegmentRenderer, function (_super) {
             this.init = function (arcSegment, isCorner) {
-                _super.init(arcSegment, isCorner);
+                _super.init.call(this, arcSegment, isCorner);
             };
             this.render = function (t, context) {
                 var linePerpendicular1 = this.Segment.Segment1.getPerpendicularLine(t, this.getPoint1(t));

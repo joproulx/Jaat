@@ -15,7 +15,7 @@ define([
                 points.push(new Point(x + w, y + h));
                 points.push(new Point(x, y + h));
 
-                _super.init(t, points, false, true);
+                _super.init.call(thist, points, false, true);
             };
         });
         return RectangleShape;

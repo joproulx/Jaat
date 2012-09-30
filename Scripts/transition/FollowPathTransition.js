@@ -8,7 +8,7 @@ define([
                 this.Path = path;
                 this.StartRatio = startRatio;
                 this.EndRatio = endRatio;
-                _super.init();
+                _super.init.call(this);
             };
             this.getValue = function (t) {
                 if (t < this.StartTimestamp || t > this.EndTimestamp) {

@@ -16,7 +16,7 @@ define([
                         { SegmentType:"line" }
                     ]};
 
-                _super.init(t, path);
+                _super.init.call(thist, path);
             };
         });
         return ArrowShape;

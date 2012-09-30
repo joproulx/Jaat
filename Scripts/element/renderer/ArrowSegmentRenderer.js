@@ -4,7 +4,7 @@ define([
     function (Ctor, SegmentRenderer) {
         var ArrowSegmentRenderer = Ctor(SegmentRenderer, function (_super) {
             this.init = function (arrowEndPoint) {
-                _super.init(arrowEndPoint, true);
+                _super.init.call(this, arrowEndPoint, true);
                 this.IsIndependantShape = true;
                 this.ArrowEndPoint = arrowEndPoint;
             };

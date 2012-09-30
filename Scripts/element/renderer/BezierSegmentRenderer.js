@@ -4,7 +4,7 @@ define([
     function (Ctor, SegmentRenderer) {
         var BezierSegmentRenderer = Ctor(SegmentRenderer, function (_super) {
             this.init = function (bezierSegment) {
-                _super.init(bezierSegment, false);
+                _super.init.call(this, bezierSegment, false);
             };
             this.render = function (t, context, startRatio, endRatio) {
                 var point1 = this.getControlPoint1(t, startRatio, endRatio);

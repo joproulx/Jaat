@@ -5,7 +5,7 @@ define([
     function (Ctor, TimedValue, LinearTransition) {
         var LinearTimedValue = Ctor(TimedValue, function (_super) {
             this.init = function (defaultValue) {
-                _super.init(function () {
+                _super.init.call(this, function () {
                     return new LinearTransition();
                 });
 

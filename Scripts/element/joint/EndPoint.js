@@ -4,7 +4,7 @@ define([
     function (Ctor, Joint) {
         var EndPoint = Ctor(Joint, function (_super) {
             this.init = function (point) {
-                _super.init(point);
+                _super.init.call(this, point);
             };
             this.createSegmentRenderer = function () {
                 return null;
