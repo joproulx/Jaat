@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <script data-main="scripts/main" src="scripts/libs/require/require-jquery.js"></script>
+</head>
+<body>
+<div>0</div>
+<script>
+    require(['main'], function () {
+        require([
+            'helpers/SampleCanvas',
+            'element/shape/PolySegmentShape'],
+                function (SampleCanvas, PolySegmentShape) {
+
+                    var sampleCanvas = new SampleCanvas("test1");
+
+                    var polyLine = new PolySegmentShape(0, {
+                        IsClosedPath:false,
+                        Origin:{X:100, Y:100},
+                        Items:[
+                            { X:0, Y:0 },
+                            { SegmentType:"line"},
+                            { X:100, Y:0 },
+                            { SegmentType:"line"},
+                            { X:100, Y:100 }]});
+
+                    polyLine.StrokeDashOffset.set(0, 0);
+                    polyLine.StrokeDashOffset.set(10000, 1000);
+
+                    polyLine.StrokeRatio.End.set(0, 0);
+                    polyLine.StrokeRatio.End.set(10000, 1);
+                    polyLine.StrokeColor.set(0, {R:120, G:120, B:120});
+
+                    sampleCanvas.addToScene(polyLine);
+                });
+    });
+</script>
+</body>
+</html>

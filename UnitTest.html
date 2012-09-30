@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <script data-main="scripts/main" src="scripts/libs/require/require-jquery.js"></script>
+</head>
+<body>
+<div>0</div>
+<script>
+    require(['main'], function(){
+        require(['common/TransformationMatrixHelper'],function(helper){
+           var x = helper.getRotationMatrix(5);
+        });
+    });
+</script>
+</body>
+</html>
